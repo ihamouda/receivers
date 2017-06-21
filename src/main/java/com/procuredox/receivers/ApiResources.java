@@ -42,6 +42,7 @@ public class ApiResources {
                     email.sendEmail(Uuid);
                 }
             };
+            task.run();
             return Response.status(Response.Status.OK).build();
         }
         catch (IOException e){
