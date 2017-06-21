@@ -18,6 +18,7 @@ import java.util.UUID;
 public class ApiResources {
     private static AppResources rb = AppResources.getInstance();
     private static final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
+    private static SendEmail email = SendEmail.getInstance();
     @POST
     @Path("/tradeshift")
     @Consumes(MediaType.TEXT_XML)
@@ -28,12 +29,19 @@ public class ApiResources {
         }
         try {
             String Uuid = UUID.randomUUID().toString();
+
             File directory = new File(BATCHPATH+Uuid);
             if(!directory.exists()){
                 directory.mkdirs();
             }
             File file = new File(directory+"/"+Uuid+".xml");
             FileUtils.writeByteArrayToFile(file,Xml.getBytes());
+            Runnable task = new Runnable() {
+                @Override
+                public void run() {
+                    email.sendEmail(Uuid);
+                }
+            };
             return Response.status(Response.Status.OK).build();
         }
         catch (IOException e){
