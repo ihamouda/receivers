@@ -19,7 +19,7 @@ public class ApiResources {
     private static AppResources rb = AppResources.getInstance();
     private static final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
     @POST
-    @Path("/receive")
+    @Path("/tradeshift")
     @Consumes(MediaType.TEXT_XML)
     public Response receiveDocument(String Xml){
         if(Xml == null){
