@@ -20,7 +20,7 @@ public class ApiResources {
     private static final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
     @POST
     @Path("/tradeshift")
-    @Consumes(MediaType.TEXT_XML)
+    @Consumes(MediaType.APPLICATION_XML)
     public Response receiveDocument(String Xml){
         if(Xml == null){
             System.out.println("TradeShift: No Document");
