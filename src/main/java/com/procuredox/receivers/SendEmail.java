@@ -68,7 +68,7 @@ public class SendEmail {
             ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
             ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
             ve.init();
-            Template t = ve.getTemplate("templates/email.vm");
+            Template t = ve.getTemplate("templates/notify.vm");
             VelocityContext ctx = new VelocityContext();
             ctx.put("id", id);
             StringWriter writer = new StringWriter();
