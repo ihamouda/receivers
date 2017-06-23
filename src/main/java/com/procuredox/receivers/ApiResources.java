@@ -1,6 +1,7 @@
 package com.procuredox.receivers;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.glassfish.jersey.internal.util.Base64;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -15,11 +16,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+
 /**
  * Created by ihamouda on 2017-06-21.
  */
 @Path("/")
 public class ApiResources {
+    final static Logger logger = Logger.getLogger(ApiResources.class);
     private static AppResources rb = AppResources.getInstance();
     private static final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
     private static SendEmail email = SendEmail.getInstance();
@@ -64,14 +67,15 @@ public class ApiResources {
     public Response getCatPo(@FormParam("CXML-base64") String cxml){
         try {
             String decoded = Base64.decode(cxml.getBytes()).toString();
+            logger.info(decoded);
             FileUtils.writeByteArrayToFile(
                     new File("c:/Users/ihamouda/Documents/CAT/tests/cat_order.xml"), decoded.toString().getBytes());
             return Response.status(Response.Status.OK).build();
         }catch (IOException e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
