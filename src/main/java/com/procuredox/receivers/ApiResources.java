@@ -66,10 +66,10 @@ public class ApiResources {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response getCatPo(@FormParam("CXML-base64") String cxml){
         try {
-            String decoded = Base64.decode(cxml.getBytes()).toString();
-            logger.info(decoded);
+            final byte[] decodedBytes = Base64.decode(cxml.getBytes());
+            logger.info(new String(decodedBytes));
             FileUtils.writeByteArrayToFile(
-                    new File("c:/Users/ihamouda/Documents/CAT/tests/cat_order.xml"), decoded.toString().getBytes());
+                    new File("c:/Users/ihamouda/Documents/CAT/tests/cat_order.xml"), decodedBytes);
             return Response.status(Response.Status.OK).build();
         }catch (IOException e){
             logger.error(e.getMessage());
