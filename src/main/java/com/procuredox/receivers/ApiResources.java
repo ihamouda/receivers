@@ -69,7 +69,7 @@ public class ApiResources {
             final byte[] decodedBytes = Base64.decode(cxml.getBytes());
             logger.info(new String(decodedBytes));
             FileUtils.writeByteArrayToFile(
-                    new File("c:/Users/ihamouda/Documents/CAT/tests/cat_order.xml"), decodedBytes);
+                    new File("/data/biztalk/cat/cat_order.xml"), decodedBytes);
             return Response.status(Response.Status.OK).build();
         }catch (IOException e){
             logger.error(e.getMessage());
