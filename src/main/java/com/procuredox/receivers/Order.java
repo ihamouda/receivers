@@ -10,12 +10,14 @@ public class Order {
     private String currency;
     private String operationAllowed;
     private List<Item> items;
+    private Integer count;
 
-    public Order(Double totalAmount, String currency, String operationAllowed, List<Item> items) {
+    public Order(Double totalAmount, String currency, String operationAllowed, List<Item> items, Integer count) {
         this.totalAmount = totalAmount;
         this.currency = currency;
         this.operationAllowed = operationAllowed;
         this.items = items;
+        this.count = count;
     }
 
     public Order() {
@@ -51,5 +53,13 @@ public class Order {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

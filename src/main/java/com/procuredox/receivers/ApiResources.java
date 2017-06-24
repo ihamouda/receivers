@@ -9,6 +9,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.apache.velocity.tools.generic.NumberTool;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
@@ -22,6 +23,7 @@ import javax.xml.bind.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.UUID;
 
 
@@ -115,7 +117,10 @@ public class ApiResources {
                 item.setUnitOfMeasure(itemIn.getItemDetail().getUnitOfMeasure().getvalue());
                 order.getItems().add(item);
             }
+            order.setCount(order.getItems().size());
             ctx.put("order",order);
+            ctx.put("number",new NumberTool());
+            ctx.put("aLocale", Locale.US);
             StringWriter writer = new StringWriter();
             t.merge(ctx, writer);
             return Response.status(Response.Status.OK).entity(writer.toString()).build();
