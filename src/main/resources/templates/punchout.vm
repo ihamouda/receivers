@@ -17,7 +17,7 @@
         <h5>Your shopping card has been received</h5>
     </div>
     <div class="row">
-        <div class="col-sm-1">
+        <div class="col-sm-2">
             <h6><strong>Line items: </strong></h6>
         </div>
         <div class="col-sm-2">
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-1">
+        <div class="col-sm-2">
             <h6><strong>Total amount: </strong>
         </div>
         <div class="col-sm-2">
@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-1">
+        <div class="col-sm-2">
             <h6><strong>Currency: </strong></h6>
         </div>
         <div class="col-sm-2">
@@ -50,7 +50,7 @@
                 <th>Unit price</th>
                 <th>UOM</th>
                 <th>Part Id</th>
-                <th>Auxilary Id</th>
+                <th>Auxiliary Id</th>
             </tr>
             </thead>
             <tbody>
@@ -59,7 +59,7 @@
                     <td>$line.lineNumber</td>
                     <td>$line.description</td>
                     <td>$line.quantity</td>
-                    <td>$line.unitPrice</td>
+                    <td>$number.format("currency",$line.unitPrice)</td>
                     <td>$line.unitOfMeasure</td>
                     <td>$line.supplierPartId</td>
                     <td>$line.supplierPartAuxilaryId</td>
