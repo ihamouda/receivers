@@ -109,7 +109,7 @@ public class ApiResources {
                 item.setLineNumber(Integer.parseInt(itemIn.getLineNumber()));
                 item.setQuantity(Double.parseDouble(itemIn.getQuantity()));
                 item.setSupplierPartId(itemIn.getItemID().getSupplierPartID().getvalue());
-                item.setGetSupplierPartAuxilaryId((String)itemIn.getItemID().getSupplierPartAuxiliaryID().
+                item.setSupplierPartAuxilaryId((String)itemIn.getItemID().getSupplierPartAuxiliaryID().
                         getContent().get(0));
                 item.setUnitPrice(Double.parseDouble(itemIn.getItemDetail().getUnitPrice().getMoney().getvalue()));
                 item.setUnitOfMeasure(itemIn.getItemDetail().getUnitOfMeasure().getvalue());

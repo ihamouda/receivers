@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <title>CAT Shopping Cart Response</title>
     <meta charset="utf-8">
@@ -13,7 +13,7 @@
     <div>
 
     </div>
-<div class="table table-striped table-condensed table-responsive">
+<table class="table table-striped table-condensed table-responsive">
     <thead>
         <tr>
             <th>Line #</th>
@@ -32,13 +32,14 @@
                 <td>$line.description</td>
                 <td>$line.quantity</td>
                 <td>$line.unitPrice</td>
-                <td>$line.unitOfMesure</td>
+                <td>$line.unitOfMeasure</td>
                 <td>$line.supplierPartId</td>
                 <td>$line.supplierPartAuxilaryId</td>
             </tr>
         #end
     </tbody>
-</div>
+</table>
+</table>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

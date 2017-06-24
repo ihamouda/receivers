@@ -5,16 +5,16 @@ package com.procuredox.receivers;
  */
 public class Item {
     private String supplierPartId;
-    private String getSupplierPartAuxilaryId;
+    private String supplierPartAuxilaryId;
     private Integer lineNumber;
     private Double unitPrice;
     private String description;
     private String unitOfMeasure;
     private Double quantity;
 
-    public Item(String supplierPartId, String getSupplierPartAuxilaryId, Integer lineNumber, Double unitPrice, String description, String unitOfMeasure, Double quantity) {
+    public Item(String supplierPartId, String supplierPartAuxilaryId, Integer lineNumber, Double unitPrice, String description, String unitOfMeasure, Double quantity) {
         this.supplierPartId = supplierPartId;
-        this.getSupplierPartAuxilaryId = getSupplierPartAuxilaryId;
+        this.supplierPartAuxilaryId = supplierPartAuxilaryId;
         this.lineNumber = lineNumber;
         this.unitPrice = unitPrice;
         this.description = description;
@@ -33,12 +33,12 @@ public class Item {
         this.supplierPartId = supplierPartId;
     }
 
-    public String getGetSupplierPartAuxilaryId() {
-        return getSupplierPartAuxilaryId;
+    public String getSupplierPartAuxilaryId() {
+        return supplierPartAuxilaryId;
     }
 
-    public void setGetSupplierPartAuxilaryId(String getSupplierPartAuxilaryId) {
-        this.getSupplierPartAuxilaryId = getSupplierPartAuxilaryId;
+    public void setSupplierPartAuxilaryId(String supplierPartAuxilaryId) {
+        this.supplierPartAuxilaryId = supplierPartAuxilaryId;
     }
 
     public Integer getLineNumber() {
