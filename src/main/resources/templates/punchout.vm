@@ -11,9 +11,6 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <img src="https://testapp.procuredox.com/resources/images/logo.png" class="img-responsive" alt="ProcureDox Logo">
-    </div>
-    <div class="row">
         <h5>Your shopping card has been received</h5>
     </div>
     <div class="row">
@@ -38,6 +35,14 @@
         </div>
         <div class="col-sm-2">
             <h6>$order.currency</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <h6><strong>ProcureDox Batch # : </strong></h6>
+        </div>
+        <div class="col-sm-2">
+            <h6>$order.batchNumber</h6>
         </div>
     </div>
     <div class="row">

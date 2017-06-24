@@ -34,6 +34,7 @@ import java.util.UUID;
 public class ApiResources {
     final static Logger logger = Logger.getLogger(ApiResources.class);
     private static AppResources rb = AppResources.getInstance();
+    final static Utils utils = Utils.getInstance();
     private static final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
     private static SendEmail email = SendEmail.getInstance();
     @POST
@@ -79,8 +80,9 @@ public class ApiResources {
         try {
             final byte[] decodedBytes = Base64.decode(cxml.getBytes());
             logger.info(new String(decodedBytes));
+            Integer batchNumber = utils.getBatchNumber();
             FileUtils.writeByteArrayToFile(
-                    new File("/data/biztalk/cat/cat_order.xml"), decodedBytes);
+                    new File(BATCHPATH+batchNumber.toString()+"/cat_order.xml"), decodedBytes);
             String xml = new String(decodedBytes, StandardCharsets.UTF_8);
             xml = xml.replaceAll("<!DOCTYPE.*cXML.dtd\">", "");
             InputStream is = new ByteArrayInputStream(xml.getBytes());
@@ -118,6 +120,7 @@ public class ApiResources {
                 order.getItems().add(item);
             }
             order.setCount(order.getItems().size());
+            order.setBatchNumber(batchNumber);
             ctx.put("order",order);
             ctx.put("number",new NumberTool());
             ctx.put("aLocale", Locale.US);
@@ -131,6 +134,9 @@ public class ApiResources {
             logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }catch (DocumentException e){
+            logger.error(e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }catch (Exception e){
             logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
