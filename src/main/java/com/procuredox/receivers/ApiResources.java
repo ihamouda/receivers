@@ -109,7 +109,7 @@ public class ApiResources {
             order.setItems(new ArrayList<>());
             for(ItemIn itemIn: message.getItemIn()){
                 Item item = new Item();
-                item.setDescription(itemIn.getItemDetail().getDescription().get(0).getvalue());
+                item.setDescription(itemIn.getItemDetail().getDescription().get(0).getvalue().trim());
                 item.setLineNumber(Integer.parseInt(itemIn.getLineNumber()));
                 item.setQuantity(Double.parseDouble(itemIn.getQuantity()));
                 item.setSupplierPartId(itemIn.getItemID().getSupplierPartID().getvalue());
