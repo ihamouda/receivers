@@ -1,9 +1,8 @@
-package com.procuredox.receivers;
+package com.procuredox.receivers.cat;
 
-import com.procuredox.receivers.cat.OrderMessage;
-import com.procuredox.receivers.ordermessage.*;
-
-import com.procuredox.receivers.tradeshift.Receive;
+import com.procuredox.receivers.*;
+import com.procuredox.receivers.ordermessage.ItemIn;
+import com.procuredox.receivers.ordermessage.PunchOutOrderMessage;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -17,74 +16,27 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.glassfish.jersey.internal.util.Base64;
 
-import javax.ws.rs.*;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.UUID;
-
 
 /**
- * Created by ihamouda on 2017-06-21.
+ * Created by ihamouda on 2017-06-25.
  */
-@Path("/")
-public class ApiResources {
-    final static Logger logger = Logger.getLogger(ApiResources.class);
-    private static AppResources rb = AppResources.getInstance();
-    final static Utils utils = Utils.getInstance();
-    private static final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
-    private static SendEmail email = SendEmail.getInstance();
-    @POST
-    @Path("/tradeshift")
-    @Consumes(MediaType.TEXT_XML)
-    public Response receiveDocument(String Xml){
-        /*
-        if(Xml == null){
-            System.out.println("TradeShift: No Document");
-            return Response.status(Response.Status.BAD_REQUEST).entity("No Document").build();
-        }
+public class OrderMessage {
+    final Logger logger = Logger.getLogger(getClass().getName());
+    private AppResources rb = AppResources.getInstance();
+    final Utils utils = Utils.getInstance();
+    private final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
+    private SendEmail email = SendEmail.getInstance();
+
+    public Response receiveOrderMessage(String cxml){
         try {
-            String Uuid = UUID.randomUUID().toString();
-
-            File directory = new File(BATCHPATH+Uuid);
-            if(!directory.exists()){
-                directory.mkdirs();
-            }
-            File file = new File(directory+"/"+Uuid+".xml");
-            FileUtils.writeByteArrayToFile(file,Xml.getBytes());
-            Runnable task = new Runnable() {
-                @Override
-                public void run() {
-                    email.sendEmail(Uuid);
-                }
-            };
-            task.run();
-            return Response.status(Response.Status.OK).build();
-        }
-        catch (IOException e){
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }catch (Exception e){
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-        */
-        Receive receive = new Receive();
-        Response response = receive.receiveTradeShift(Xml);
-        return response;
-    }
-
-    @POST
-    @Path("/cat")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.TEXT_HTML)
-    public Response getCatPo(@FormParam("CXML-base64") String cxml){
-        /*try {
             final byte[] decodedBytes = Base64.decode(cxml.getBytes());
             logger.info(new String(decodedBytes));
             Integer batchNumber = utils.getBatchNumber();
@@ -146,9 +98,6 @@ public class ApiResources {
         }catch (Exception e){
             logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }*/
-        OrderMessage message = new OrderMessage();
-        Response response = message.receiveOrderMessage(cxml);
-        return response;
+        }
     }
 }
