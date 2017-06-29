@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Order" type="OrderType"/>
+  <xs:complexType name="quantitiesType">
+    <xs:sequence>
+      <xs:element name="quantity" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="49.0"/>
+            <xs:enumeration value="120.0"/>
+            <xs:enumeration value="31.0"/>
+            <xs:enumeration value="1.0"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="location" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="CAT - MORTON"/>
+            <xs:enumeration value="TRACKER, LEDUC AB"/>
+            <xs:enumeration value="In Store"/>
+            <xs:enumeration value="Contact Dealer"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element type="quantitiesType" name="quantities" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="OrderType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="count"/>
+      <xs:element type="xs:string" name="batchNumber"/>
+      <xs:element type="xs:string" name="supplierOrderReference"/>
+      <xs:element type="xs:string" name="totalAmount"/>
+      <xs:element type="xs:string" name="currency"/>
+      <xs:element type="xs:string" name="expectedDate"/>
+      <xs:element type="xs:string" name="operationAllowed"/>
+      <xs:element type="shipToType" name="shipTo"/>
+      <xs:element type="itemsType" name="items"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="addressType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="street"/>
+      <xs:element type="xs:string" name="city"/>
+      <xs:element type="xs:string" name="province"/>
+      <xs:element type="xs:string" name="postalCode"/>
+      <xs:element type="xs:string" name="country"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="itemsType">
+    <xs:sequence>
+      <xs:element name="supplierPartId" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="0T0703|CAT"/>
+            <xs:enumeration value="0R2694|CAT"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element type="xs:string" name="supplierPartAuxiliaryId" minOccurs="0"/>
+      <xs:element name="lineNumber" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="2"/>
+            <xs:enumeration value="3"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="unitPrice" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="0.58"/>
+            <xs:enumeration value="983.67"/>
+            <xs:enumeration value="440.97"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="description" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="BOLT 0T0703 (CAT) |58826606"/>
+            <xs:enumeration value="CYL KIT 0R2694 (CAT) |58826606"/>
+            <xs:enumeration value="CORE DEPOSIT CYL KIT 0R2694 (CAT) |58826606"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element type="xs:string" name="unitOfMeasure" minOccurs="0"/>
+      <xs:element type="xs:string" name="deliveryDate" minOccurs="0"/>
+      <xs:element name="quantity" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="200.0"/>
+            <xs:enumeration value="1.0"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element type="quantitiesType" name="quantities" minOccurs="0"/>
+      <xs:element type="itemsType" name="items" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="shipToType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="shipToName"/>
+      <xs:element type="addressType" name="address"/>
+      <xs:element type="xs:string" name="shippingInstructions"/>
+      <xs:element type="xs:string" name="accountNum"/>
+      <xs:element type="xs:string" name="accountName"/>
+      <xs:element type="xs:string" name="supplierReference"/>
+      <xs:element type="xs:string" name="shipVia"/>
+      <xs:element type="xs:string" name="paymentInstructions"/>
+      <xs:element type="xs:string" name="deliveryInstructions"/>
+      <xs:element type="specialInstructionsType" name="specialInstructions"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="specialInstructionsType">
+    <xs:sequence>
+      <xs:element name="instruction" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="Leave at security"/>
+            <xs:enumeration value="Leave waybill"/>
+            <xs:enumeration value="Call when delivered"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element type="specialInstructionsType" name="specialInstructions" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -7,46 +7,181 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .h4, .h5, .h6, h4, h5, h6 {
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+        .h5, h5 {
+            font-size: 12px;
+        }
+        .h6, h6 {
+            font-size: 11px;
+        }
+
+        dd{
+            font-size: 11px;
+
+        }
+        .table-condensed>tbody>tr>td, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>td, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>thead>tr>th{
+            padding-top:2px;
+            padding-bottom: 2px;
+        }
+
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+
+            line-height: 1.3;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+
+        }
+
+        .table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 4px;
+        }
+
+    </style>
 </head>
 <body>
 <div class="container-fluid">
     <div class="row">
-        <h5>Your shopping card has been received</h5>
-    </div>
-    <div class="row">
-        <div class="col-sm-2">
-            <h6><strong>Line items: </strong></h6>
-        </div>
-        <div class="col-sm-2">
-            <h6>$order.count</h6>
+        <div class="col-sm-12">
+            <h5><strong>Your shopping card has been received</strong></h5>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-2">
-            <h6><strong>Total amount: </strong>
+        <div class="col-sm-4">
+            <div class="root">
+                <h5><strong><u>Order data<u></u></strong></h5>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h6><strong>Order reference</strong></h6>
+                </div>
+                <div class="col-sm-7">
+                    <h6>$order.supplierOrderReference</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h6><strong>Line items: </strong></h6>
+                </div>
+                <div class="col-sm-7">
+                    <h6>$order.count</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h6><strong>Total amount: </strong></h6>
+                </div>
+                <div class="col-sm-7">
+                    <h6>$number.format("currency",$order.totalAmount)</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h6><strong>Supplier id: </strong></h6>
+                </div>
+                <div class="col-sm-7">
+                    <h6>$order.shipTo.supplierReference</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h6><strong>Client id: </strong></h6>
+                </div>
+                <div class="col-sm-7">
+                    <h6>$order.shipTo.accountNum</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h6><strong>Client name: </strong></h6>
+                </div>
+                <div class="col-sm-7">
+                    <h6>$order.shipTo.accountName</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h6><strong>Expected date: </strong></h6>
+                </div>
+                <div class="col-sm-7">
+                    <h6>$date.format("MM/dd/yyyy", $date.epochToDate($order.expectedDate))</h6>
+                </div>
+            </div>
         </div>
-        <div class="col-sm-2">
-            <h6>$number.format("currency",$order.totalAmount)</h6>
+        <div class="col-sm-8">
+            <div class="row">
+                <h5><strong><u>Shipping and delivery</u></strong></h5>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6><strong>Name: </strong></h6>
+                </div>
+                <div class="col-sm-9">
+                    <h6>$order.shipTo.shipToName</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6><strong>Address: </strong></h6>
+                </div>
+                <div class="col-sm-9">
+                    <h6>$order.shipTo.address.street, $order.shipTo.address.city, $order.shipTo.address.province
+                        , $order.shipTo.address.postalCode, $order.shipTo.address.country</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6><strong>Delivery method: </strong></h6>
+                </div>
+                <div class="col-sm-9">
+                    <h6>$order.shipTo.shippingInstructions</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6><strong>Payment method: </strong></h6>
+                </div>
+                <div class="col-sm-9">
+                    <h6>$order.shipTo.paymentInstructions</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6><strong>Transport method: </strong></h6>
+                </div>
+                <div class="col-sm-9">
+                    <h6>$order.shipTo.shipVia</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6><strong>Attention: </strong></h6>
+                </div>
+                <div class="col-sm-9">
+                    <h6>$order.shipTo.deliveryInstructions</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <h6><strong>Special instructions: </strong></h6>
+                </div>
+                <div class="col-sm-9">
+                    #foreach($special in $order.shipTo.specialInstructions.specialInstructions)
+                        <dd>$special.instruction</dd>
+                    #end
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-2">
-            <h6><strong>Currency: </strong></h6>
-        </div>
-        <div class="col-sm-2">
-            <h6>$order.currency</h6>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-2">
-            <h6><strong><mark>ProcureDox Batch # :</mark> </strong></h6>
-        </div>
-        <div class="col-sm-2">
-            <h6><mark>$order.batchNumber</mark></h6>
-        </div>
-    </div>
-    <div class="row">
-        <table class="table table-striped table-condensed table-responsive">
+        <div class="col-sm-12">
+        <table class="table table-striped table-condensed table-responsive" id="table">
             <thead>
             <tr>
                 <th><h6><strong>Line #</strong></h6></th>
@@ -59,23 +194,42 @@
             </tr>
             </thead>
             <tbody>
-                #foreach($line in $order.items)
+                #foreach($line in $order.items.items)
                 <tr>
                     <td><h6>$line.lineNumber</h6></td>
                     <td><h6>$line.description</h6></td>
-                    <td><h6>$line.quantity</h6></td>
+                    <td><h6>$number.format("#0.00",$line.quantity)</h6>
+                        #if ($line.quantities.quantities.size() > 0)
+                            <table class="table table-striped table-condensed table-responsive">
+                                <thead>
+                                <tr>
+                                    <th><small>Quantity</small></th>
+                                    <th><small>Location<small></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                #foreach($quantity in $line.quantities.quantities)
+                                    <tr>
+                                        <td><small>$number.format("#0.00",$quantity.quantity)</small></td>
+                                        <td><small>$quantity.location</small></td>
+                                    </tr>
+                                #end
+                                </tbody>
+                            </table>
+                        #end
+                    </td>
                     <td><h6>$number.format("currency",$line.unitPrice)</h6></td>
                     <td><h6>$line.unitOfMeasure</h6></td>
                     <td><h6>$line.supplierPartId</h6></td>
-                    <td><h6>$line.supplierPartAuxilaryId</h6></td>
+                    <td><h6>$line.supplierPartAuxiliaryId</h6></td>
                 </tr>
                 #end
             </tbody>
         </table>
         </table>
+        </div>
     </div>
+
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
 </html>
