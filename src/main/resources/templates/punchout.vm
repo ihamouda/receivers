@@ -81,6 +81,14 @@
             </div>
             <div class="row">
                 <div class="col-sm-5">
+                    <h6><strong>Order type: </strong></h6>
+                </div>
+                <div class="col-sm-7">
+                    <h6>$order.orderType</h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
                     <h6><strong>Total amount: </strong></h6>
                 </div>
                 <div class="col-sm-7">
@@ -221,8 +229,10 @@
                     <td><h6>$line.supplierPartAuxiliaryId</h6></td>
                 </tr>
                 <tr id="collapse$line.lineNumber" class="collapse out">
-                    <td colspan="5">comments: $line.comments</td>
-                    <td colspan="2">
+                    <td colspan="3">comments: $line.comments</td>
+                    <td>Man. Part #: $line.manufacturerPartId</td>
+                    <td>Man. Name: $line.manufacturerName</td>
+                    <td colspan="4">
                         #if ($line.quantities.quantities.size() > 0)
                             <table class="table table-condensed table-responsive">
                                 <thead>
