@@ -128,12 +128,9 @@ public class OrderMessage {
             List<Item> list = new ArrayList<>();
             for(ItemIn item: items){
                 Item listItem = new Item();
-                Boolean coreCharge;
-                if (item.getItemID().getIdReference().stream()
+                boolean coreCharge = item.getItemID().getIdReference().stream()
                         .filter(e -> e.getDomain().equals("core")).
-                                collect(Collectors.toList()).get(0).getIdentifier().equals("Y"))
-                    coreCharge = true;
-                else coreCharge = false;
+                                collect(Collectors.toList()).get(0).getIdentifier().equals("Y");
                 listItem.setCoreCharge(coreCharge);
                 listItem.setDescription(item.getItemDetail().getDescription().get(0).getvalue().trim());
                 listItem.setUnitOfMeasure(item.getItemDetail().getUnitOfMeasure().getvalue().trim());

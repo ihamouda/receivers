@@ -147,7 +147,7 @@ public class Item {
         return coreCharge;
     }
 
-    public void setCoreCharge(Boolean coreCharge) {
+    public void setCoreCharge(boolean coreCharge) {
         this.coreCharge = coreCharge;
     }
 
