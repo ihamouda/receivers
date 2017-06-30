@@ -1,10 +1,7 @@
 
 package com.procuredox.receivers.cat.responsemessage;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
@@ -46,6 +43,7 @@ import javax.xml.bind.annotation.XmlType;
     "shipTo",
     "items"
 })
+@XmlRootElement(name = "Order")
 public class OrderType {
 
     @XmlElement(required = true)

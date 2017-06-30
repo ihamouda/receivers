@@ -165,9 +165,9 @@ public class OrderMessage {
             FileUtils.writeStringToFile(xmlFile,xml);*/
             FileUtils.writeByteArrayToFile(
                     new File(BATCHPATH+batchNumber.toString()+"/pdox_order.xml"), xml.getBytes());
-            JAXBContext orderCtx = JAXBContext.newInstance(OrderType.class);
+            /*JAXBContext orderCtx = JAXBContext.newInstance(OrderType.class);
             Unmarshaller orderUnmarshaller = orderCtx.createUnmarshaller();
-            OrderType orderType = (OrderType)orderUnmarshaller.unmarshal(new ByteArrayInputStream(xml.getBytes()));
+            OrderType orderType = (OrderType)orderUnmarshaller.unmarshal(new ByteArrayInputStream(xml.getBytes()));*/
             VelocityEngine ve = new VelocityEngine();
             ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
             ve.setProperty("runtime.log.logsystem.log4j.logger", ApiResources.class.getName());
@@ -176,7 +176,7 @@ public class OrderMessage {
             ve.init();
             Template t = ve.getTemplate("templates/punchout.vm");
             VelocityContext ctx = new VelocityContext();
-            ctx.put("order",orderType);
+            ctx.put("order",order);
             ctx.put("number",new NumberTool());
             ctx.put("aLocale", Locale.US);
             ctx.put("date",new ExtendedDateTool());
