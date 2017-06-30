@@ -1,5 +1,5 @@
 
-package com.procuredox.receivers.responsemessage;
+package com.procuredox.receivers.cat.responsemessage;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,9 +21,9 @@ import java.util.List;
  *         &lt;element name="quantity" minOccurs="0">
  *           &lt;simpleType>
  *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *               &lt;enumeration value="49.0"/>
- *               &lt;enumeration value="120.0"/>
- *               &lt;enumeration value="31.0"/>
+ *               &lt;enumeration value="17.0"/>
+ *               &lt;enumeration value="14.0"/>
+ *               &lt;enumeration value="169.0"/>
  *               &lt;enumeration value="1.0"/>
  *             &lt;/restriction>
  *           &lt;/simpleType>
@@ -32,8 +32,7 @@ import java.util.List;
  *           &lt;simpleType>
  *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *               &lt;enumeration value="CAT - MORTON"/>
- *               &lt;enumeration value="TRACKER, LEDUC AB"/>
- *               &lt;enumeration value="In Store"/>
+ *               &lt;enumeration value="CAT-MELBOURNE"/>
  *               &lt;enumeration value="Contact Dealer"/>
  *             &lt;/restriction>
  *           &lt;/simpleType>

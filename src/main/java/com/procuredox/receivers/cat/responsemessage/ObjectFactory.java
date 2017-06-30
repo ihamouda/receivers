@@ -1,5 +1,5 @@
 
-package com.procuredox.receivers.responsemessage;
+package com.procuredox.receivers.cat.responsemessage;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the ordermessage package. 
+ * generated in the responsemessage package.
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -27,7 +27,7 @@ public class ObjectFactory {
     private final static QName _Order_QNAME = new QName("", "Order");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: ordermessage
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: responsemessage
      * 
      */
     public ObjectFactory() {
@@ -43,7 +43,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link QuantitiesType }
-     *
+     * 
      */
     public QuantitiesType createQuantitiesType() {
         return new QuantitiesType();
@@ -51,7 +51,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link AddressType }
-     *
+     * 
      */
     public AddressType createAddressType() {
         return new AddressType();
@@ -59,7 +59,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ItemsType }
-     *
+     * 
      */
     public ItemsType createItemsType() {
         return new ItemsType();
@@ -67,18 +67,10 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link ShipToType }
-     *
+     * 
      */
     public ShipToType createShipToType() {
         return new ShipToType();
-    }
-
-    /**
-     * Create an instance of {@link SpecialInstructionsType }
-     *
-     */
-    public SpecialInstructionsType createSpecialInstructionsType() {
-        return new SpecialInstructionsType();
     }
 
     /**

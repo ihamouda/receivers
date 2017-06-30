@@ -1,5 +1,5 @@
 
-package com.procuredox.receivers.responsemessage;
+package com.procuredox.receivers.cat.responsemessage;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

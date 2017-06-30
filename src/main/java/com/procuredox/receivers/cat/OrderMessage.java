@@ -2,10 +2,10 @@ package com.procuredox.receivers.cat;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.procuredox.receivers.*;
+import com.procuredox.receivers.cat.responsemessage.OrderType;
 import com.procuredox.receivers.ordermessage.Extrinsic;
 import com.procuredox.receivers.ordermessage.ItemIn;
 import com.procuredox.receivers.ordermessage.PunchOutOrderMessage;
-import com.procuredox.receivers.responsemessage.OrderType;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -155,7 +155,6 @@ public class OrderMessage {
                 listItem.setManufacturerName(item.getItemDetail().getManufacturerName().getvalue().trim());
                 listItem.setComments(item.getComments().getvalue().trim());
                 list.add(listItem);
-
             }
             order.setItems(list);
             order.setCount(list.size());

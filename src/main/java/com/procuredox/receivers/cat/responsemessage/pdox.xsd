@@ -6,9 +6,9 @@
       <xs:element name="quantity" minOccurs="0">
         <xs:simpleType>
           <xs:restriction base="xs:string">
-            <xs:enumeration value="49.0"/>
-            <xs:enumeration value="120.0"/>
-            <xs:enumeration value="31.0"/>
+            <xs:enumeration value="17.0"/>
+            <xs:enumeration value="14.0"/>
+            <xs:enumeration value="169.0"/>
             <xs:enumeration value="1.0"/>
           </xs:restriction>
         </xs:simpleType>
@@ -17,8 +17,7 @@
         <xs:simpleType>
           <xs:restriction base="xs:string">
             <xs:enumeration value="CAT - MORTON"/>
-            <xs:enumeration value="TRACKER, LEDUC AB"/>
-            <xs:enumeration value="In Store"/>
+            <xs:enumeration value="CAT-MELBOURNE"/>
             <xs:enumeration value="Contact Dealer"/>
           </xs:restriction>
         </xs:simpleType>
@@ -53,7 +52,7 @@
       <xs:element name="supplierPartId" minOccurs="0">
         <xs:simpleType>
           <xs:restriction base="xs:string">
-            <xs:enumeration value="0T0703|CAT"/>
+            <xs:enumeration value="0T0307|CAT"/>
             <xs:enumeration value="0R2694|CAT"/>
           </xs:restriction>
         </xs:simpleType>
@@ -71,7 +70,7 @@
       <xs:element name="unitPrice" minOccurs="0">
         <xs:simpleType>
           <xs:restriction base="xs:string">
-            <xs:enumeration value="0.58"/>
+            <xs:enumeration value="15.79"/>
             <xs:enumeration value="983.67"/>
             <xs:enumeration value="440.97"/>
           </xs:restriction>
@@ -80,9 +79,9 @@
       <xs:element name="description" minOccurs="0">
         <xs:simpleType>
           <xs:restriction base="xs:string">
-            <xs:enumeration value="BOLT 0T0703 (CAT) |58826606"/>
-            <xs:enumeration value="CYL KIT 0R2694 (CAT) |58826606"/>
-            <xs:enumeration value="CORE DEPOSIT CYL KIT 0R2694 (CAT) |58826606"/>
+            <xs:enumeration value="STUD 0T0307 (CAT) |58826869"/>
+            <xs:enumeration value="CYL KIT 0R2694 (CAT) |58826869"/>
+            <xs:enumeration value="CORE DEPOSIT  CYL KIT 0R2694 (CAT) |58826869"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:element>
@@ -93,6 +92,24 @@
           <xs:restriction base="xs:string">
             <xs:enumeration value="200.0"/>
             <xs:enumeration value="1.0"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element type="xs:string" name="comments" minOccurs="0"/>
+      <xs:element name="manufacturerPartId" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="0T0307"/>
+            <xs:enumeration value="0R2694"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element type="xs:string" name="manufacturerName" minOccurs="0"/>
+      <xs:element name="coreCharge" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="false"/>
+            <xs:enumeration value="true"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:element>
@@ -109,23 +126,10 @@
       <xs:element type="xs:string" name="accountName"/>
       <xs:element type="xs:string" name="supplierReference"/>
       <xs:element type="xs:string" name="shipVia"/>
+      <xs:element type="xs:string" name="orderType"/>
       <xs:element type="xs:string" name="paymentInstructions"/>
       <xs:element type="xs:string" name="deliveryInstructions"/>
-      <xs:element type="specialInstructionsType" name="specialInstructions"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="specialInstructionsType">
-    <xs:sequence>
-      <xs:element name="instruction" minOccurs="0">
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="Leave at security"/>
-            <xs:enumeration value="Leave waybill"/>
-            <xs:enumeration value="Call when delivered"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:element>
-      <xs:element type="specialInstructionsType" name="specialInstructions" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element type="xs:string" name="specialInstructions"/>
     </xs:sequence>
   </xs:complexType>
 </xs:schema>

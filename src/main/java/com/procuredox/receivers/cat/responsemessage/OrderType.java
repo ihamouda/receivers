@@ -1,7 +1,10 @@
 
-package com.procuredox.receivers.responsemessage;
+package com.procuredox.receivers.cat.responsemessage;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 
 /**
@@ -31,7 +34,6 @@ import javax.xml.bind.annotation.*;
  * 
  * 
  */
-@XmlRootElement(name = "Order")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OrderType", propOrder = {
     "count",
@@ -275,7 +277,7 @@ public class OrderType {
      * @param value
      *     allowed object is
      *     {@link ItemsType }
-     *
+     *     
      */
     public void setItems(ItemsType value) {
         this.items = value;
