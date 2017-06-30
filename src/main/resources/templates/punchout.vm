@@ -203,7 +203,7 @@
             </thead>
             <tbody>
                 #foreach($line in $order.items.items)
-                #if ($line.coreCharge)
+                #if ($line.coreCharge == "true")
                     <tr class="danger">
                 #else
                     <tr>
