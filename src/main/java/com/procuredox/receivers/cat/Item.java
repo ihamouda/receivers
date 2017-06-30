@@ -32,7 +32,7 @@ public class Item {
     @JacksonXmlProperty(localName = "manufacturerName")
     private String manufacturerName;
     @JacksonXmlProperty(localName = "coreCharge")
-    private Boolean coreCharge;
+    private boolean coreCharge;
     @JacksonXmlProperty(localName = "quantities")
     private List<ItemQuantity> quantities;
 
@@ -143,7 +143,7 @@ public class Item {
         this.manufacturerName = manufacturerName;
     }
 
-    public Boolean getCoreCharge() {
+    public boolean getCoreCharge() {
         return coreCharge;
     }
 
