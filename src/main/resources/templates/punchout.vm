@@ -209,8 +209,18 @@
                         <tr>
                     #end
                     <td><h6>$line.lineNumber</h6></td>
-                    <td><h6>$line.description</h6></td>
-                    <td><h6>$number.format("#0.00",$line.quantity)</h6>
+                    <td><h6><button class="btn btn-link" data-toggle="collapse" data-target="#collapse$line.lineNumber">
+                        $line.description
+                    </button></h6></td>
+                    <td><h6>$number.format("#0.00",$line.quantity)</h6></td>
+                    <td><h6>$number.format("currency",$line.unitPrice)</h6></td>
+                    <td><h6>$line.unitOfMeasure</h6></td>
+                    <td><h6>$line.supplierPartId</h6></td>
+                    <td><h6>$line.supplierPartAuxiliaryId</h6></td>
+                </tr>
+                <tr id="collapse$line.lineNumber" class="collapse out">
+                    <td colspan="5">comments: $line.comments</td>
+                    <td colspan="2">
                         #if ($line.quantities.quantities.size() > 0)
                             <table class="table table-condensed table-responsive">
                                 <thead>
@@ -220,20 +230,16 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                #foreach($quantity in $line.quantities.quantities)
+                                    #foreach($quantity in $line.quantities.quantities)
                                     <tr>
                                         <td><small>$number.format("#0.00",$quantity.quantity)</small></td>
                                         <td><small>$quantity.location</small></td>
                                     </tr>
-                                #end
+                                    #end
                                 </tbody>
                             </table>
                         #end
                     </td>
-                    <td><h6>$number.format("currency",$line.unitPrice)</h6></td>
-                    <td><h6>$line.unitOfMeasure</h6></td>
-                    <td><h6>$line.supplierPartId</h6></td>
-                    <td><h6>$line.supplierPartAuxiliaryId</h6></td>
                 </tr>
                 #end
             </tbody>
