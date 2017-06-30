@@ -25,6 +25,7 @@ public class Order {
     private Date expectedDate;
     @JacksonXmlProperty(localName = "operationAllowed")
     private String operationAllowed;
+
     @JacksonXmlProperty(localName = "shipTo")
     private ShipTo shipTo;
     @JacksonXmlProperty(localName = "items")

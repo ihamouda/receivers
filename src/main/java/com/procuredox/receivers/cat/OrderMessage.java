@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * Created by ihamouda on 2017-06-25.
  */
 public class OrderMessage {
-    final Logger logger = Logger.getLogger(getClass().getName());
+    final Logger logger = Logger.getLogger("Cat Order");
     private AppResources rb = AppResources.getInstance();
     final Utils utils = Utils.getInstance();
     private final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
@@ -45,55 +45,12 @@ public class OrderMessage {
     public Response receiveOrderMessage(String cxml){
         try {
             final byte[] decodedBytes = Base64.decode(cxml.getBytes());
-            logger.info(new String(decodedBytes));
+            //logger.info(new String(decodedBytes));
             Integer batchNumber = utils.getBatchNumber();
             FileUtils.writeByteArrayToFile(
                     new File(BATCHPATH+batchNumber.toString()+"/cat_order.xml"), decodedBytes);
             String cXml = new String(decodedBytes, StandardCharsets.UTF_8);
             cXml = cXml.replaceAll("<!DOCTYPE.*cXML.dtd\">", "");
-/*
-            InputStream is = new ByteArrayInputStream(xml.getBytes());
-            VelocityEngine ve = new VelocityEngine();
-            ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
-            ve.setProperty("runtime.log.logsystem.log4j.logger", ApiResources.class.getName());
-            ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-            ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-            ve.init();
-            Template t = ve.getTemplate("templates/punchout.vm");
-            VelocityContext ctx = new VelocityContext();
-            SAXReader reader = new SAXReader();
-            Document doc = reader.read(is);
-            org.dom4j.Element elm = (org.dom4j.Element) doc.selectSingleNode("/cXML/Message/PunchOutOrderMessage");
-            JAXBContext jaxbContext = JAXBContext.newInstance(PunchOutOrderMessage.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            InputStream isXml = new ByteArrayInputStream(elm.asXML().getBytes());
-            PunchOutOrderMessage message = (PunchOutOrderMessage) unmarshaller.unmarshal(isXml);
-            Order order = new Order();
-            order.setOperationAllowed(message.getPunchOutOrderMessageHeader().getOperationAllowed());
-            order.setTotalAmount(Double.parseDouble(message.getPunchOutOrderMessageHeader().getTotal()
-                    .getMoney().getvalue()));
-            order.setCurrency(message.getPunchOutOrderMessageHeader().getTotal().getMoney().getCurrency());
-            order.setItems(new ArrayList<>());
-            for(ItemIn itemIn: message.getItemIn()){
-                Item item = new Item();
-                item.setDescription(itemIn.getItemDetail().getDescription().get(0).getvalue().trim());
-                item.setLineNumber(Integer.parseInt(itemIn.getLineNumber()));
-                item.setQuantity(Double.parseDouble(itemIn.getQuantity()));
-                item.setSupplierPartId(itemIn.getItemID().getSupplierPartID().getvalue());
-                item.setSupplierPartAuxilaryId((String)itemIn.getItemID().getSupplierPartAuxiliaryID().
-                        getContent().get(0));
-                item.setUnitPrice(Double.parseDouble(itemIn.getItemDetail().getUnitPrice().getMoney().getvalue()));
-                item.setUnitOfMeasure(itemIn.getItemDetail().getUnitOfMeasure().getvalue());
-                order.getItems().add(item);
-            }
-            order.setCount(order.getItems().size());
-            order.setBatchNumber(batchNumber);
-            ctx.put("order",order);
-            ctx.put("number",new NumberTool());
-            ctx.put("aLocale", Locale.US);
-            StringWriter writer = new StringWriter();
-            t.merge(ctx, writer);
-            return Response.status(Response.Status.OK).entity(writer.toString()).build();*/
             SimpleDateFormat formatIn = new SimpleDateFormat("yyyyMMdd");
             Order order = new Order();
             InputStream is = new ByteArrayInputStream(cXml.getBytes());
@@ -140,21 +97,27 @@ public class OrderMessage {
             shipTo.setPaymentInstructions(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference()
                     .stream().filter(e->e.getDomain().equals("shipInstr")).collect(Collectors.toList()).get(0)
                     .getDescription().getvalue().trim());
+            shipTo.setOrderType(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference()
+                    .stream().filter(e->e.getDomain().equals("orderType")).collect(Collectors.toList()).get(0)
+                    .getDescription().getvalue().trim());
             shipTo.setShippingInstructions(message.getPunchOutOrderMessageHeader().getShipTo()
                     .getTransportInformation().get(0).getShippingInstructions().getDescription().getvalue().trim());
             List<SpecialInstruction> specialInstructions = new ArrayList<>();
+
             String instructions = message.getPunchOutOrderMessageHeader().getShipping()
                     .getDescription().getvalue();
-            //Scanner s = new Scanner(instructions);
-            //s.useDelimiter("\u2020\u2020");
-            //System.out.println(instructions.charAt(instructions.length()-1));
-            String[] fields = splitFields(instructions.trim(),50);
-            for(String s: fields){
-                specialInstructions.add(new SpecialInstruction(s.trim()));
+            if(instructions != null && !instructions.isEmpty()) {
+                //Scanner s = new Scanner(instructions);
+                //s.useDelimiter("\u2020\u2020");
+                //System.out.println(instructions.charAt(instructions.length()-1));
+                String[] fields = splitFields(instructions.trim(), 50);
+                for (String s : fields) {
+                    specialInstructions.add(new SpecialInstruction(s.trim()));
+                }
+                //while (s.hasNext()){
+                //    specialInstructions.add(new SpecialInstruction(s.next().trim()));
+                //}
             }
-            //while (s.hasNext()){
-            //    specialInstructions.add(new SpecialInstruction(s.next().trim()));
-            //}
             shipTo.setSpecialInstructions(specialInstructions);
             order.setShipTo(shipTo);
             order.setSupplierOrderReference(message.getPunchOutOrderMessageHeader().getSupplierOrderInfo().getOrderID().trim());
@@ -164,6 +127,13 @@ public class OrderMessage {
             List<Item> list = new ArrayList<>();
             for(ItemIn item: items){
                 Item listItem = new Item();
+                Boolean coreCharge;
+                if (item.getItemID().getIdReference().stream()
+                        .filter(e -> e.getDomain().equals("core")).
+                                collect(Collectors.toList()).get(0).getIdentifier().equals("Y"))
+                    coreCharge = true;
+                else coreCharge = false;
+                listItem.setCoreCharge(coreCharge);
                 listItem.setDescription(item.getItemDetail().getDescription().get(0).getvalue().trim());
                 listItem.setUnitOfMeasure(item.getItemDetail().getUnitOfMeasure().getvalue().trim());
                 listItem.setUnitPrice(Double.parseDouble(item.getItemDetail().getUnitPrice().getMoney().getvalue().trim()));
@@ -183,6 +153,8 @@ public class OrderMessage {
                     quantities.add(quantity);
                 }
                 listItem.setQuantities(quantities);
+                listItem.setManufacturerPartId(item.getItemDetail().getManufacturerPartID().trim());
+                listItem.setManufacturerName(item.getItemDetail().getManufacturerName().getvalue().trim());
                 list.add(listItem);
 
             }
@@ -214,7 +186,7 @@ public class OrderMessage {
             FileUtils.writeStringToFile(file,writer.toString());*/
             return Response.status(Response.Status.OK).entity(writer.toString()).build();
         }catch (JAXBException e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }catch (IOException e){
             logger.error(e.getMessage());

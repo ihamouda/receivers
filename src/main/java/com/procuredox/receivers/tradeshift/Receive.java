@@ -16,7 +16,7 @@ import java.util.UUID;
  * Created by ihamouda on 2017-06-25.
  */
 public class Receive {
-    final Logger logger = Logger.getLogger(getClass().getName());
+    final Logger logger = Logger.getLogger("Tradeshift");
     private  AppResources rb = AppResources.getInstance();
     final  Utils utils = Utils.getInstance();
     private final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
@@ -46,10 +46,10 @@ public class Receive {
             return Response.status(Response.Status.OK).build();
         }
         catch (IOException e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }

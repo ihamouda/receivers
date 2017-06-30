@@ -23,6 +23,8 @@ public class ShipTo {
     private String supplierReference;
     @JacksonXmlProperty(localName = "shipVia")
     private String shipVia;
+    @JacksonXmlProperty(localName = "orderType")
+    private String orderType;
     @JacksonXmlProperty(localName = "paymentInstructions")
     private String paymentInstructions;
     @JacksonXmlProperty(localName = "deliveryInstructions")
@@ -30,7 +32,7 @@ public class ShipTo {
     @JacksonXmlProperty(localName = "specialInstructions")
     List<SpecialInstruction> specialInstructions;
 
-    public ShipTo(String shipToName, Address address, String shippingInstructions, String accountNum, String accountName, String supplierReference, String shipVia, String paymentInstructions, String deliveryLocation, List<SpecialInstruction> specialInstructions) {
+    public ShipTo(String shipToName, Address address, String shippingInstructions, String accountNum, String accountName, String supplierReference, String shipVia, String orderType, String paymentInstructions, String deliveryLocation, List<SpecialInstruction> specialInstructions) {
         this.shipToName = shipToName;
         this.address = address;
         this.shippingInstructions = shippingInstructions;
@@ -38,6 +40,7 @@ public class ShipTo {
         this.accountName = accountName;
         this.supplierReference = supplierReference;
         this.shipVia = shipVia;
+        this.orderType = orderType;
         this.paymentInstructions = paymentInstructions;
         this.deliveryLocation = deliveryLocation;
         this.specialInstructions = specialInstructions;
@@ -100,6 +103,14 @@ public class ShipTo {
 
     public void setShipVia(String shipVia) {
         this.shipVia = shipVia;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
     }
 
     public String getPaymentInstructions() {

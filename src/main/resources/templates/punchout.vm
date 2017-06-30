@@ -195,7 +195,11 @@
             </thead>
             <tbody>
                 #foreach($line in $order.items.items)
-                <tr>
+                #if ($line.coreCharge)
+                    <tr style="color: red">
+                #else
+                    <tr>
+                #end
                     <td><h6>$line.lineNumber</h6></td>
                     <td><h6>$line.description</h6></td>
                     <td><h6>$number.format("#0.00",$line.quantity)</h6>

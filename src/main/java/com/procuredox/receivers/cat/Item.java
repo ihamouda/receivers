@@ -25,10 +25,18 @@ public class Item {
     private Date deliveryDate;
     @JacksonXmlProperty(localName = "quantity")
     private Double quantity;
+    @JacksonXmlProperty(localName = "comments")
+    private String comments;
+    @JacksonXmlProperty(localName = "manufacturerPartId")
+    private String manufacturerPartId;
+    @JacksonXmlProperty(localName = "manufacturerName")
+    private String manufacturerName;
+    @JacksonXmlProperty(localName = "coreCharge")
+    private Boolean coreCharge;
     @JacksonXmlProperty(localName = "quantities")
     private List<ItemQuantity> quantities;
 
-    public Item(String supplierPartId, String supplierPartAuxiliaryId, Integer lineNumber, Double unitPrice, String description, String unitOfMeasure, Date deliveryDate, Double quantity, List<ItemQuantity> quantities) {
+    public Item(String supplierPartId, String supplierPartAuxiliaryId, Integer lineNumber, Double unitPrice, String description, String unitOfMeasure, Date deliveryDate, Double quantity, String comments, String manufacturerPartId, String manufacturerName, Boolean coreCharge, List<ItemQuantity> quantities) {
         this.supplierPartId = supplierPartId;
         this.supplierPartAuxiliaryId = supplierPartAuxiliaryId;
         this.lineNumber = lineNumber;
@@ -37,6 +45,10 @@ public class Item {
         this.unitOfMeasure = unitOfMeasure;
         this.deliveryDate = deliveryDate;
         this.quantity = quantity;
+        this.comments = comments;
+        this.manufacturerPartId = manufacturerPartId;
+        this.manufacturerName = manufacturerName;
+        this.coreCharge = coreCharge;
         this.quantities = quantities;
     }
 
@@ -105,6 +117,38 @@ public class Item {
 
     public void setQuantity(Double quantity) {
         this.quantity = quantity;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public String getManufacturerPartId() {
+        return manufacturerPartId;
+    }
+
+    public void setManufacturerPartId(String manufacturerPartId) {
+        this.manufacturerPartId = manufacturerPartId;
+    }
+
+    public String getManufacturerName() {
+        return manufacturerName;
+    }
+
+    public void setManufacturerName(String manufacturerName) {
+        this.manufacturerName = manufacturerName;
+    }
+
+    public Boolean getCoreCharge() {
+        return coreCharge;
+    }
+
+    public void setCoreCharge(Boolean coreCharge) {
+        this.coreCharge = coreCharge;
     }
 
     public List<ItemQuantity> getQuantities() {
