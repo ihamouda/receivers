@@ -155,6 +155,7 @@ public class OrderMessage {
                 listItem.setQuantities(quantities);
                 listItem.setManufacturerPartId(item.getItemDetail().getManufacturerPartID().trim());
                 listItem.setManufacturerName(item.getItemDetail().getManufacturerName().getvalue().trim());
+                listItem.setComments(item.getComments().getvalue().trim());
                 list.add(listItem);
 
             }
