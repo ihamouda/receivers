@@ -61,6 +61,7 @@ public class OrderMessage {
             Unmarshaller unmarshaller = jaxBCtx.createUnmarshaller();
             PunchOutOrderMessage message = (PunchOutOrderMessage) unmarshaller.unmarshal(
                     new ByteArrayInputStream(elm.asXML().getBytes()));
+            order.setBatchNumber(batchNumber);
             Address address = new Address();
             address.setStreet(message.getPunchOutOrderMessageHeader().getShipTo().getAddress().getPostalAddress()
                     .getStreet().get(0).getvalue().trim());
@@ -166,6 +167,8 @@ public class OrderMessage {
             xml = xml.replaceAll("xmlns=\"\"","");
             /*File xmlFile = new File("c:/Users/ihamouda/Documents/order.xml");
             FileUtils.writeStringToFile(xmlFile,xml);*/
+            FileUtils.writeByteArrayToFile(
+                    new File(BATCHPATH+batchNumber.toString()+"/pdox_order.xml"), xml.getBytes());
             JAXBContext orderCtx = JAXBContext.newInstance(OrderType.class);
             Unmarshaller orderUnmarshaller = orderCtx.createUnmarshaller();
             OrderType orderType = (OrderType)orderUnmarshaller.unmarshal(new ByteArrayInputStream(xml.getBytes()));
@@ -185,6 +188,8 @@ public class OrderMessage {
             t.merge(ctx, writer);
             /*File file = new File("c:/Users/ihamouda/Documents/new.html");
             FileUtils.writeStringToFile(file,writer.toString());*/
+            FileUtils.writeByteArrayToFile(
+                    new File(BATCHPATH+batchNumber.toString()+"/pdox_order.html"), writer.toString().getBytes());
             return Response.status(Response.Status.OK).entity(writer.toString()).build();
         }catch (JAXBException e){
             logger.error(e.getMessage());

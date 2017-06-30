@@ -113,6 +113,14 @@
                     <h6>$date.format("MM/dd/yyyy", $date.epochToDate($order.expectedDate))</h6>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <h6><strong>Procuredox batch #:</strong></h6>
+                </div>
+                <div class="col-sm-7">
+                    <h6>$order.batchNumber</h6>
+                </div>
+            </div>
         </div>
         <div class="col-sm-8">
             <div class="row">
