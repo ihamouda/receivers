@@ -209,7 +209,8 @@
             </thead>
             <tbody>
                 #foreach($line in $order.items.items)
-                    #if($line.coreCharge) <tr class="danger"> #else <tr> #end
+                    $line.coreCharge
+                    #if($line.coreCharge == true) <tr class="danger"> #else <tr> #end
                     <td><h6>$line.lineNumber</h6></td>
                     <td><h6><button class="btn btn-link" data-toggle="collapse" data-target="#collapse$line.lineNumber">
                         $line.description
