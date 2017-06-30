@@ -186,7 +186,7 @@
                     <h6><strong>Special instructions: </strong></h6>
                 </div>
                 <div class="col-sm-9">
-                    #foreach($special in $order.shipTo.specialInstructions)
+                    #foreach($special in $order.shipTo.specialInstructions.specialInstructions)
                         <dd>$special.instruction</dd>
                     #end
                 </div>
@@ -208,7 +208,7 @@
             </tr>
             </thead>
             <tbody>
-                #foreach($line in $order.items)
+                #foreach($line in $order.items.items)
                     #if($line.coreCharge == true) <tr class="danger"> #else <tr> #end
                     <td><h6>$line.lineNumber</h6></td>
                     <td><h6><button class="btn btn-link" data-toggle="collapse" data-target="#collapse$line.lineNumber">
