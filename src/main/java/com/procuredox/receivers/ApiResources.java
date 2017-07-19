@@ -1,5 +1,6 @@
 package com.procuredox.receivers;
 
+import com.procuredox.receivers.cat.CatConfirm;
 import com.procuredox.receivers.cat.OrderMessage;
 import com.procuredox.receivers.ordermessage.*;
 
@@ -53,5 +54,14 @@ public class ApiResources {
         return response;
     }
 
+    @POST
+    @Path("/catconfirm")
+    @Consumes(MediaType.TEXT_XML)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCatConfirm(String xml){
+        CatConfirm confirm = new CatConfirm();
+        Response response = confirm.receiveCatConfirm(xml);
 
+        return response;
+    }
 }
