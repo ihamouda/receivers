@@ -1,5 +1,6 @@
 package com.procuredox.receivers;
 
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
@@ -9,5 +10,8 @@ import javax.ws.rs.ApplicationPath;
  */
 @ApplicationPath("/")
 public class ApiApplication extends ResourceConfig {
-    public ApiApplication(){register(ApiResources.class);}
+    public ApiApplication(){
+        register(ApiResources.class);
+        register(LoggingFeature.class);
+    }
 }
