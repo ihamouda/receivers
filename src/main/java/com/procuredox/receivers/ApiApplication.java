@@ -12,8 +12,11 @@ import java.util.logging.Logger;
  */
 @ApplicationPath("/")
 public class ApiApplication extends ResourceConfig {
+
+    public static final int MB_5 = 1024 * 1024 * 5;
+
     public ApiApplication(){
         register(ApiResources.class);
-        register(new LoggingFeature(Logger.getLogger("InOut"), Level.INFO, LoggingFeature.Verbosity.PAYLOAD_ANY, Integer.MAX_VALUE-1));
+        register(new LoggingFeature(Logger.getLogger("InOut"), Level.INFO, LoggingFeature.Verbosity.PAYLOAD_ANY, MB_5));
     }
 }
