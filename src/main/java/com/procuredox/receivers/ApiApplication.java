@@ -14,6 +14,6 @@ import java.util.logging.Logger;
 public class ApiApplication extends ResourceConfig {
     public ApiApplication(){
         register(ApiResources.class);
-        register(new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME), Level.INFO, LoggingFeature.Verbosity.PAYLOAD_ANY, Integer.MAX_VALUE));
+        register(new LoggingFeature(Logger.getLogger("InOut"), Level.INFO, LoggingFeature.Verbosity.PAYLOAD_ANY, Integer.MAX_VALUE));
     }
 }
