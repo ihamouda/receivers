@@ -27,7 +27,7 @@ public class CatConfirm {
             FileUtils.writeByteArrayToFile(
                     new File(BATCHPATH + batchNumber.toString() + "/cat_confirm.xml"), decodedBytes);
 
-            return Response.status(Response.Status.OK).build();
+            return Response.status(Response.Status.ACCEPTED).build();
         }catch (IOException e){
             logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

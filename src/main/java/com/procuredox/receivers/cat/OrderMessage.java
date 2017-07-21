@@ -186,7 +186,7 @@ public class OrderMessage {
             FileUtils.writeStringToFile(file,writer.toString());*/
             FileUtils.writeByteArrayToFile(
                     new File(BATCHPATH+batchNumber.toString()+"/pdox_order.html"), writer.toString().getBytes());
-            return Response.status(Response.Status.OK).entity(writer.toString()).build();
+            return Response.status(Response.Status.ACCEPTED).entity(writer.toString()).build();
         }catch (JAXBException e){
             logger.error(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
