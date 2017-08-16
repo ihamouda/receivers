@@ -15,7 +15,8 @@ import java.io.IOException;
  * Created by ihamouda on 2017-07-19.
  */
 public class CatConfirm {
-    final Logger logger = Logger.getLogger("Cat Order");
+    private static final Logger logger = Logger.getLogger(CatConfirm.class);
+
     private AppResources rb = AppResources.getInstance();
     final Utils utils = Utils.getInstance();
     private final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
@@ -29,10 +30,10 @@ public class CatConfirm {
 
             return Response.status(Response.Status.OK).build();
         }catch (IOException e){
-            logger.error(e.getMessage());
+            logger.error("cat confirm receive error: ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("cat confirm receive error: ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
