@@ -219,7 +219,7 @@ public class OrderMessage {
                 return result;
             }else return null;
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return null;
         }
     }
