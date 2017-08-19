@@ -52,7 +52,7 @@ public class OrderMessage {
                     new File(BATCHPATH+batchNumber.toString()+"/cat_order.xml"), decodedBytes);
             String cXml = new String(decodedBytes, StandardCharsets.UTF_8);
             cXml = cXml.replaceAll("<!DOCTYPE.*cXML.dtd\">", "");
-            SimpleDateFormat formatIn = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat formatIn = new SimpleDateFormat("yyyy-MM--dd");
             Order order = new Order();
             InputStream is = new ByteArrayInputStream(cXml.getBytes());
             SAXReader reader = new SAXReader();
@@ -121,6 +121,7 @@ public class OrderMessage {
                 //}
             }
             shipTo.setSpecialInstructions(specialInstructions);
+            order.setExpectedDate(formatIn.parse(message.getPunchOutOrderMessageHeader().getSupplierOrderInfo().getOrderDate().trim()));
             order.setShipTo(shipTo);
             order.setSupplierOrderReference(message.getPunchOutOrderMessageHeader().getSupplierOrderInfo().getOrderID().trim());
             order.setCurrency(message.getPunchOutOrderMessageHeader().getTotal().getMoney().getCurrency().trim());
@@ -139,8 +140,8 @@ public class OrderMessage {
                 listItem.setLineNumber(Integer.parseInt(item.getLineNumber().trim()));
                 listItem.setDeliveryDate(formatIn.parse(item.getItemDetail().getLeadTime().trim()));
                 listItem.setQuantity(Double.parseDouble(item.getQuantity()));
-                if(items.indexOf(item) == 0)
-                    order.setExpectedDate(formatIn.parse(item.getItemDetail().getLeadTime().trim()));
+//                if(items.indexOf(item) == 0)
+//                    order.setExpectedDate(formatIn.parse(item.getItemDetail().getLeadTime().trim()));
                 listItem.setSupplierPartId(item.getItemID().getSupplierPartID().getvalue().trim());
                 listItem.setSupplierPartAuxiliaryId(item.getItemID().getSupplierPartAuxiliaryID().getContent().get(0).toString().
                         trim());
