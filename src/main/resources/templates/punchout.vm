@@ -84,7 +84,7 @@
                     <h6><strong>Order type: </strong></h6>
                 </div>
                 <div class="col-sm-7">
-                    <h6>$order.orderType</h6>
+                    <h6>$order.shipTo.orderType</h6>
                 </div>
             </div>
             <div class="row">
