@@ -7,6 +7,7 @@ import com.procuredox.receivers.ordermessage.Extrinsic;
 import com.procuredox.receivers.ordermessage.ItemIn;
 import com.procuredox.receivers.ordermessage.PunchOutOrderMessage;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -27,9 +28,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -122,6 +121,8 @@ public class OrderMessage {
             }
             shipTo.setSpecialInstructions(specialInstructions);
             order.setExpectedDate(formatIn.parse(message.getPunchOutOrderMessageHeader().getSupplierOrderInfo().getOrderDate().trim()));
+            Calendar c = Calendar.getInstance();
+            c.setTime(formatIn.parse(message.getPunchOutOrderMessageHeader().getSupplierOrderInfo().getOrderDate().trim()));
             order.setShipTo(shipTo);
             order.setSupplierOrderReference(message.getPunchOutOrderMessageHeader().getSupplierOrderInfo().getOrderID().trim());
             order.setCurrency(message.getPunchOutOrderMessageHeader().getTotal().getMoney().getCurrency().trim());
@@ -138,7 +139,10 @@ public class OrderMessage {
                 listItem.setUnitOfMeasure(item.getItemDetail().getUnitOfMeasure().getvalue().trim());
                 listItem.setUnitPrice(Double.parseDouble(item.getItemDetail().getUnitPrice().getMoney().getvalue().trim()));
                 listItem.setLineNumber(Integer.parseInt(item.getLineNumber().trim()));
-                listItem.setDeliveryDate(formatIn.parse(item.getItemDetail().getLeadTime().trim()));
+                Integer lead = Integer.parseInt(item.getItemDetail().getLeadTime().trim());
+                c.add(Calendar.DAY_OF_MONTH, lead);
+                String dateLead = formatIn.format(c.getTime());
+                listItem.setDeliveryDate(formatIn.parse(dateLead));
                 listItem.setQuantity(Double.parseDouble(item.getQuantity()));
 //                if(items.indexOf(item) == 0)
 //                    order.setExpectedDate(formatIn.parse(item.getItemDetail().getLeadTime().trim()));
