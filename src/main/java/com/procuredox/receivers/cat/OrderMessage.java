@@ -218,7 +218,11 @@ public class OrderMessage {
                     idx += 1;
                 }
                 return result;
-            }else return null;
+            }else{
+                final String[] result = new String[1];
+                result[0] = string.trim();
+                return result;
+            }
         }catch (Exception e){
             logger.error(e.getMessage());
             return null;
