@@ -36,7 +36,8 @@ import java.util.stream.Collectors;
  * Created by ihamouda on 2017-06-25.
  */
 public class OrderMessage {
-    final Logger logger = Logger.getLogger("Cat Order");
+    private static final Logger logger = Logger.getLogger(OrderMessage.class);
+
     private AppResources rb = AppResources.getInstance();
     final Utils utils = Utils.getInstance();
     private final String BATCHPATH = rb.getRb().getString("root")+"data/biztalk/Share/Attachments/";
@@ -188,16 +189,16 @@ public class OrderMessage {
                     new File(BATCHPATH+batchNumber.toString()+"/pdox_order.html"), writer.toString().getBytes());
             return Response.status(Response.Status.ACCEPTED).entity(writer.toString()).build();
         }catch (JAXBException e){
-            logger.error(e.getMessage());
+            logger.error("order jaxb error:", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }catch (IOException e){
-            logger.error(e.getMessage());
+            logger.error("order io error:", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }catch (DocumentException e){
-            logger.error(e.getMessage());
+            logger.error("order document error:", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("order error:", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
