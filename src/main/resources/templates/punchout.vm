@@ -124,7 +124,7 @@
                     <h6><strong>Expected date: </strong></h6>
                 </div>
                 <div class="col-sm-7">
-                    <h6>$order.expectedDate</h6>
+                    <h6>$date.epochToDate($order.expectedDate)</h6>
                 </div>
             </div>
             <div class="row">
