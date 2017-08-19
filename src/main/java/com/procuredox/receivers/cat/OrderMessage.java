@@ -52,7 +52,7 @@ public class OrderMessage {
                     new File(BATCHPATH+batchNumber.toString()+"/cat_order.xml"), decodedBytes);
             String cXml = new String(decodedBytes, StandardCharsets.UTF_8);
             cXml = cXml.replaceAll("<!DOCTYPE.*cXML.dtd\">", "");
-            SimpleDateFormat formatIn = new SimpleDateFormat("yyyy-MM--dd");
+            SimpleDateFormat formatIn = new SimpleDateFormat("yyyy-MM-dd");
             Order order = new Order();
             InputStream is = new ByteArrayInputStream(cXml.getBytes());
             SAXReader reader = new SAXReader();
