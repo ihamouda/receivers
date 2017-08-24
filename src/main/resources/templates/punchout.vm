@@ -261,7 +261,10 @@
         </div>
     </div>
     <div class="row">
-
+        <div class="btn-group btn-group-sm pull-right">
+            <button class="btn btn-danger">Discard</button>
+            <button class="btn btn-success">Send for approval</button>
+        </div>
     </div>
 </div>
 </body>
