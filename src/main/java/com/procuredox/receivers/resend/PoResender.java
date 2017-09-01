@@ -39,7 +39,12 @@ public class PoResender {
             final String content = IOUtils.toString(is);
             final String partnerCode = loadPartnerCode(secretKey);
             final String msgId = loadMsgId(batchNumber);
-            sendFileToBroker(content, partnerCode, batchNumber, msgId, filename);
+            if (content.contains("FunctionalAcknowledgement")) {
+                sendFileToBroker(content, partnerCode, batchNumber, null, filename);
+            } else {
+                changeStatusTo(msgId, "DROPPEDVENDOR");
+                sendFileToBroker(content, partnerCode, batchNumber, msgId, filename);
+            }
         }
     }
 
@@ -58,9 +63,7 @@ public class PoResender {
                 final TextMessage message = session.createTextMessage();
                 message.setStringProperty("Folder", UUID.randomUUID().toString());
                 message.setStringProperty("BatchNumber", String.valueOf(batchNumber));
-                if (!content.contains("FunctionalAcknowledgement")) {
-                    message.setStringProperty("MsgId", msgId);
-                }
+                message.setStringProperty("MsgId", msgId);
                 message.setStringProperty("OutputFilename", filename);
                 message.setText(content);
                 producer.setDeliveryMode(DeliveryMode.PERSISTENT);
@@ -114,6 +117,16 @@ public class PoResender {
                 return resultSet.getString("msg_id");
             }
             throw new DocumentNotFound("can't find document for given batch number: " + batchNumber);
+        }
+    }
+
+    private void changeStatusTo(String msgId, String status) throws SQLException {
+        try (final Connection connection = mysqlDS.getConnection()) {
+            final CallableStatement statement = connection.prepareCall("{call procUpdateDoc(?,?,?)}");
+            statement.setString(1, msgId);
+            statement.setString(2, status);
+            statement.setString(3, null);
+            statement.execute();
         }
     }
 
