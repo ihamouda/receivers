@@ -57,7 +57,7 @@ public class PoResender {
 
             final Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             try {
-                final Queue queue = session.createQueue("vendor.out.code." + partnerCode);
+                final Queue queue = session.createQueue("vendor.out.code." + partnerCode.toLowerCase());
 
                 final MessageProducer producer = session.createProducer(queue);
                 final TextMessage message = session.createTextMessage();
