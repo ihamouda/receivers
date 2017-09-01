@@ -10,6 +10,7 @@ import com.procuredox.receivers.resend.PartnerNotFound;
 import com.procuredox.receivers.resend.PoResender;
 import com.procuredox.receivers.tradeshift.Receive;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -80,11 +81,11 @@ public class ApiResources {
             return Response.ok().build();
         } catch (DocumentNotFound | PartnerNotFound | BatchFileNotFound e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(e.getMessage())
+                    .entity(ExceptionUtils.getFullStackTrace(e))
                     .build();
         } catch (Exception e) {
             return Response.serverError()
-                    .entity(e)
+                    .entity(ExceptionUtils.getFullStackTrace(e))
                     .build();
         }
     }
