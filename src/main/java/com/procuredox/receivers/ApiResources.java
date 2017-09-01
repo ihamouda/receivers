@@ -4,6 +4,10 @@ import com.procuredox.receivers.cat.CatConfirm;
 import com.procuredox.receivers.cat.OrderMessage;
 import com.procuredox.receivers.ordermessage.*;
 
+import com.procuredox.receivers.resend.BatchFileNotFound;
+import com.procuredox.receivers.resend.DocumentNotFound;
+import com.procuredox.receivers.resend.PartnerNotFound;
+import com.procuredox.receivers.resend.PoResender;
 import com.procuredox.receivers.tradeshift.Receive;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -63,5 +67,55 @@ public class ApiResources {
         Response response = confirm.receiveCatConfirm(xml);
 
         return response;
+    }
+
+    @POST
+    @Path("/poresend")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response resendPo(ResendPORequest request) {
+        final PoResender service = new PoResender();
+        try {
+            service.resend(request.getSecretKey(), request.getBatchNumber(), request.getFilename());
+            return Response.ok().build();
+        } catch (DocumentNotFound | PartnerNotFound | BatchFileNotFound e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (Exception e) {
+            return Response.serverError()
+                    .entity(e)
+                    .build();
+        }
+    }
+
+    class ResendPORequest {
+        private String secretKey;
+        private int batchNumber;
+        private String filename;
+
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
+        }
+
+        public int getBatchNumber() {
+            return batchNumber;
+        }
+
+        public void setBatchNumber(int batchNumber) {
+            this.batchNumber = batchNumber;
+        }
+
+        public String getFilename() {
+            return filename;
+        }
+
+        public void setFilename(String filename) {
+            this.filename = filename;
+        }
     }
 }
