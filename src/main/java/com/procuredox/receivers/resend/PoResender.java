@@ -36,13 +36,14 @@ public class PoResender {
 
     public void resend(String secretKey, int batchNumber, String filename) throws Exception {
         try (final InputStream is = new FileInputStream(findFile(batchNumber))) {
+            final String content = IOUtils.toString(is);
             final String partnerCode = loadPartnerCode(secretKey);
             final String msgId = loadMsgId(batchNumber);
-            sendFileToBroker(is, partnerCode, batchNumber, msgId, filename);
+            sendFileToBroker(content, partnerCode, batchNumber, msgId, filename);
         }
     }
 
-    private void sendFileToBroker(InputStream is, String partnerCode, int batchNumber, String msgId, String filename) throws JMSException, IOException {
+    private void sendFileToBroker(String content, String partnerCode, int batchNumber, String msgId, String filename) throws JMSException, IOException {
         final ActiveMQConnectionFactory amqConnectionFactory = getAMQFactory();
 
         final javax.jms.Connection connection = amqConnectionFactory.createConnection();
@@ -54,12 +55,14 @@ public class PoResender {
                 final Queue queue = session.createQueue("vendor.out.code." + partnerCode);
 
                 final MessageProducer producer = session.createProducer(queue);
-                final BytesMessage message = session.createBytesMessage();
+                final TextMessage message = session.createTextMessage();
                 message.setStringProperty("Folder", UUID.randomUUID().toString());
                 message.setStringProperty("BatchNumber", String.valueOf(batchNumber));
-                message.setStringProperty("MsgId", msgId);
+                if (!content.contains("FunctionalAcknowledgement")) {
+                    message.setStringProperty("MsgId", msgId);
+                }
                 message.setStringProperty("OutputFilename", filename);
-                message.writeBytes(IOUtils.toByteArray(is));
+                message.setText(content);
                 producer.setDeliveryMode(DeliveryMode.PERSISTENT);
                 producer.send(message);
             } finally {
