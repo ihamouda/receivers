@@ -2,37 +2,18 @@ package com.procuredox.receivers;
 
 import com.procuredox.receivers.cat.CatConfirm;
 import com.procuredox.receivers.cat.OrderMessage;
-import com.procuredox.receivers.ordermessage.*;
 
 import com.procuredox.receivers.resend.BatchFileNotFound;
 import com.procuredox.receivers.resend.DocumentNotFound;
 import com.procuredox.receivers.resend.PartnerNotFound;
 import com.procuredox.receivers.resend.PoResender;
 import com.procuredox.receivers.tradeshift.Receive;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.apache.velocity.tools.generic.NumberTool;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
-import org.glassfish.jersey.internal.util.Base64;
 
 import javax.ws.rs.*;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.*;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.UUID;
 
 
 /**
@@ -78,14 +59,14 @@ public class ApiResources {
         final PoResender service = new PoResender();
         try {
             service.resend(request.getSecretKey(), request.getBatchNumber(), request.getFilename());
-            return Response.ok().build();
+            return Response.ok(new ResendPOResponse(true, null, null)).build();
         } catch (DocumentNotFound | PartnerNotFound | BatchFileNotFound e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(ExceptionUtils.getFullStackTrace(e))
+                    .entity(new ResendPOResponse(false, e.getMessage(), null))
                     .build();
         } catch (Exception e) {
             return Response.serverError()
-                    .entity(ExceptionUtils.getFullStackTrace(e))
+                    .entity(new ResendPOResponse(false, e.getMessage(), ExceptionUtils.getFullStackTrace(e)))
                     .build();
         }
     }
