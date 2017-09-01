@@ -147,6 +147,6 @@ public class PoResender {
     }
 
     private String directoryForBatch(int batchNumber) {
-        return BATCH_PATH + "Document/" + batchNumber;
+        return BATCH_PATH + batchNumber + "/Document";
     }
 }
