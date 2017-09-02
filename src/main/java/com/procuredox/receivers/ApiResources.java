@@ -4,6 +4,8 @@ import com.procuredox.receivers.cat.CatConfirm;
 import com.procuredox.receivers.cat.OrderMessage;
 
 import com.procuredox.receivers.custcode.CustCodePartnersRequest;
+import com.procuredox.receivers.custcode.CustCodeSearchRequest;
+import com.procuredox.receivers.custcode.GetCustCodes;
 import com.procuredox.receivers.custcode.GetCustomers;
 import com.procuredox.receivers.resend.BatchFileNotFound;
 import com.procuredox.receivers.resend.DocumentNotFound;
@@ -80,5 +82,14 @@ public class ApiResources {
     public Response getCustCodesPartners(CustCodePartnersRequest request){
         final GetCustomers customers = new GetCustomers();
         return customers.getCustomers(request.getSecKey());
+    }
+
+    @POST
+    @Path("/custcodesearch")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustCodesSearch(CustCodeSearchRequest request){
+        final GetCustCodes codes = new GetCustCodes();
+        return codes.getCustCodes(request.getSecKey(), request.getSearch());
     }
 }
