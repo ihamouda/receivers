@@ -3,6 +3,8 @@ package com.procuredox.receivers;
 import com.procuredox.receivers.cat.CatConfirm;
 import com.procuredox.receivers.cat.OrderMessage;
 
+import com.procuredox.receivers.custcode.CustCodePartnersRequest;
+import com.procuredox.receivers.custcode.GetCustomers;
 import com.procuredox.receivers.resend.BatchFileNotFound;
 import com.procuredox.receivers.resend.DocumentNotFound;
 import com.procuredox.receivers.resend.PartnerNotFound;
@@ -69,5 +71,14 @@ public class ApiResources {
                     .entity(new ResendPOResponse(false, e.getMessage(), ExceptionUtils.getFullStackTrace(e)))
                     .build();
         }
+    }
+
+    @POST
+    @Path("/custcodepartners")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustCodesPartners(CustCodePartnersRequest request){
+        final GetCustomers customers = new GetCustomers();
+        return customers.getCustomers(request.getSecKey());
     }
 }
