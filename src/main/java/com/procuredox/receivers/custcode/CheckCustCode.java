@@ -33,6 +33,11 @@ public class CheckCustCode {
             if (!sqlRs.isBeforeFirst()){
                 return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(false)).build();
             }else {
+                while (sqlRs.next()){
+                    if (sqlRs.getString(1) == null || sqlRs.getString(1).isEmpty()){
+                        return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(false)).build();
+                    }
+                }
                 return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(true)).build();
             }
         }catch (SQLException e){
