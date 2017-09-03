@@ -109,7 +109,7 @@ public class ApiResources {
     }
 
     @POST
-    @Path("/cehcseckey")
+    @Path("/checkseckey")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response checkSecKey(CheckSecKeyRequest request){
