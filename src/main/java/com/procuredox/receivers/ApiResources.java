@@ -98,4 +98,13 @@ public class ApiResources {
         final SetCustCode custcode = new SetCustCode();
         return custcode.setCustCode(request);
     }
+
+    @POST
+    @Path("/checkcutcode")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response checkCustCode(CheckCustCodeRequest request){
+        final CheckCustCode code = new CheckCustCode();
+        return code.checkCustCode(request.getSecKey(), request.getCustCode());
+    }
 }
