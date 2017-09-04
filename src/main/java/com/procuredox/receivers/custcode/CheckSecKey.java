@@ -25,20 +25,22 @@ public class CheckSecKey {
     public Response checkSecKey(String secKey){
         try{
             sqlConn = mysqlDS.getConnection();
-            String sqlQuery = "select partner_id from partner where partner_key = ?";
+            String sqlQuery = "select partner_name from partner where partner_key = ?";
             sqlStmt = sqlConn.prepareStatement(sqlQuery);
             sqlStmt.setString(1, secKey);
             sqlRs = sqlStmt.executeQuery();
             if (!sqlRs.isBeforeFirst()){
-                return Response.status(Response.Status.OK).entity(new CheckSecKeyResponse(false)).build();
+                return Response.status(Response.Status.OK).entity(new CheckSecKeyResponse(false, "")).build();
             }else {
                 while (sqlRs.next()){
                     if (sqlRs.getString(1) == null || sqlRs.getString(1).isEmpty()){
-                        return Response.status(Response.Status.OK).entity(new CheckSecKeyResponse(false)).build();
+                        return Response.status(Response.Status.OK).entity(new CheckSecKeyResponse(false, "")).build();
+                    }else {
+                        return Response.status(Response.Status.OK).entity(new CheckSecKeyResponse(true, sqlRs.getString(1))).build();
                     }
                 }
-                return Response.status(Response.Status.OK).entity(new CheckSecKeyResponse(true)).build();
             }
+            return Response.status(Response.Status.OK).entity(new CheckSecKeyResponse(false, "")).build();
         }catch (SQLException e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Success(false, e.getMessage())).build();
         }catch (Exception e){
