@@ -1,23 +1,23 @@
 package com.procuredox.receivers.custcode;
 
 public class Customer {
-    private String CustometName;
+    private String CustomerName;
     private String CustomerId;
 
-    public Customer(String custometName, String customerId) {
-        CustometName = custometName;
+    public Customer(String customerId, String customerName) {
+        CustomerName = customerName;
         CustomerId = customerId;
     }
 
     public Customer() {
     }
 
-    public String getCustometName() {
-        return CustometName;
+    public String getCustomerName() {
+        return CustomerName;
     }
 
-    public void setCustometName(String custometName) {
-        CustometName = custometName;
+    public void setCustomerName(String customerName) {
+        CustomerName = customerName;
     }
 
     public String getCustomerId() {
