@@ -116,4 +116,13 @@ public class ApiResources {
         final CheckSecKey key = new CheckSecKey();
         return key.checkSecKey(request.getSecKey());
     }
+
+    @POST
+    @Path("deletecustcode")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteCustCode(DeleteCustCodeRequest request){
+        final DeleteCustCode custCode = new DeleteCustCode();
+        return custCode.deleteCustCode(request);
+    }
 }
