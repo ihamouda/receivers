@@ -47,6 +47,7 @@ public class SetCustCode {
                 sqlStmt = sqlConn.prepareStatement(sqlQuery);
                 sqlStmt.setString(1, custcode.getBuyerId());
                 sqlStmt.setString(2, custcode.getCustCodeId());
+                sqlStmt.execute();
             }
             return Response.status(Response.Status.OK).entity(new Success(true, "")).build();
         }catch (SQLException e){
