@@ -3,6 +3,7 @@ package com.procuredox.receivers;
 import com.procuredox.receivers.cat.CatConfirm;
 import com.procuredox.receivers.cat.OrderMessage;
 
+import com.procuredox.receivers.custcode.*;
 import com.procuredox.receivers.resend.BatchFileNotFound;
 import com.procuredox.receivers.resend.DocumentNotFound;
 import com.procuredox.receivers.resend.PartnerNotFound;
@@ -69,5 +70,41 @@ public class ApiResources {
                     .entity(new ResendPOResponse(false, e.getMessage(), ExceptionUtils.getFullStackTrace(e)))
                     .build();
         }
+    }
+
+    @POST
+    @Path("/custcodepartners")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustCodesPartners(CustCodePartnersRequest request){
+        final GetCustomers customers = new GetCustomers();
+        return customers.getCustomers(request.getSecKey());
+    }
+
+    @POST
+    @Path("/custcodesearch")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustCodesSearch(CustCodeSearchRequest request){
+        final GetCustCodes codes = new GetCustCodes();
+        return codes.getCustCodes(request.getSecKey(), request.getSearch());
+    }
+
+    @POST
+    @Path("/setcustcode")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setCustCode(SetCustCodeRequest request){
+        final SetCustCode custcode = new SetCustCode();
+        return custcode.setCustCode(request);
+    }
+
+    @POST
+    @Path("/checkcustcode")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response checkCustCode(CheckCustCodeRequest request){
+        final CheckCustCode code = new CheckCustCode();
+        return code.checkCustCode(request.getSecKey(), request.getCustCode());
     }
 }

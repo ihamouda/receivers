@@ -1,7 +1,7 @@
 package com.procuredox.receivers.resend;
 
 /**
- * @author maxim.krestovsky@gmail.com on 9/1/17.
+ * @author procuredox on 8/31/17.
  */
 public class BatchFileNotFound extends RuntimeException {
     public BatchFileNotFound(String message) {
