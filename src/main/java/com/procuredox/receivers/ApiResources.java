@@ -53,7 +53,7 @@ public class ApiResources {
     }
 
     @POST
-    @Path("/poresend")
+    @Path("/requeue")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response resendPo(ResendPORequest request) {

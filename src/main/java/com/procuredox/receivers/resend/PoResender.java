@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
-import javax.print.Doc;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
