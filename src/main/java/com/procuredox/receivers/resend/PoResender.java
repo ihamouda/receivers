@@ -66,7 +66,7 @@ public class PoResender {
             case PO: return String.format("PO_%s_%s_%s.xml", data.getReceiverIndetifier(), batchNumber, data.getDocumentNumber());
             case INVRES: {
                 if (data.getBuyerCode().toUpperCase().contains("IOL")) {
-                    return String.format("InvoiceResponse_%s_%s_%s.xml", data.getBuyerCode(), batchNumber, data.getResponseForInvoice());
+                    return String.format("InvoiceResponse_%s_%s_%s.xml", data.getVendorCode(), batchNumber, data.getResponseForInvoice());
                 } else {
                     return String.format("InvoiceResponse_%s_%s_%s.xml", data.getReceiverIndetifier(), batchNumber, data.getResponseForInvoice());
                 }
