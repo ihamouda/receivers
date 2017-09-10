@@ -9,7 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
 import javax.sql.DataSource;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.sql.Connection;
 import java.util.UUID;
@@ -34,18 +37,47 @@ public class PoResender {
         this.mysqlDS = MyDataSourceFactory.getMySQLDataSource();
     }
 
-    public void resend(String secretKey, int batchNumber, String filename) throws Exception {
+    public void resend(int batchNumber) throws Exception {
         try (final InputStream is = new FileInputStream(findFile(batchNumber))) {
             final String content = IOUtils.toString(is);
-            final String partnerCode = loadPartnerCode(secretKey);
-            final String msgId = loadMsgId(batchNumber);
+            final BatchData data = loadData(batchNumber);
             if (content.contains("FunctionalAcknowledgement")) {
-                sendFileToBroker(content, partnerCode, batchNumber, null, filename);
+                final String filename = fnAckFilename(batchNumber, data);
+                sendFileToBroker(content, data.getVendorCode(), batchNumber, null, filename);
             } else {
-                changeStatusTo(msgId, "DROPPEDVENDOR");
-                sendFileToBroker(content, partnerCode, batchNumber, msgId, filename);
+                final String filename = filename(batchNumber, data);
+                changeStatusTo(data.getMsgId(), "DROPPEDVENDOR");
+                sendFileToBroker(content, data.getVendorCode(), batchNumber, data.getMsgId(), filename);
             }
         }
+    }
+
+    private String fnAckFilename(int batchNumber, BatchData data) {
+        final String uuid = UUID.randomUUID().toString();
+        switch (DocType.valueOf(data.getDocType())) {
+            case INV: return String.format("fnAck_Invoice_%s_%s_%s.xml", batchNumber, data.getReceiverIndetifier(), normalize(uuid));
+            case POACK: return String.format("fnAck_PurchaseOrderAcknowledgement_%s_%s_%s.xml", batchNumber, data.getReceiverIndetifier(), normalize(uuid));
+            default: return "fnAck.xml";
+        }
+    }
+
+    private String filename(int batchNumber, BatchData data) {
+        switch (DocType.valueOf(data.getDocType())) {
+            case PO: return String.format("PO_%s_%s_%s.xml", data.getReceiverIndetifier(), batchNumber, data.getDocumentNumber());
+            case INVRES: {
+                if (data.getBuyerCode().toUpperCase().contains("IOL")) {
+                    return String.format("InvoiceResponse_%s_%s_%s.xml", data.getBuyerCode(), batchNumber, data.getResponseForInvoice());
+                } else {
+                    return String.format("InvoiceResponse_%s_%s_%s.xml", data.getReceiverIndetifier(), batchNumber, data.getResponseForInvoice());
+                }
+            }
+            default: return "filename.xml";
+        }
+
+    }
+
+    private String normalize(String uuid) {
+        return uuid.replaceAll("-", "");
     }
 
     private void sendFileToBroker(String content, String partnerCode, int batchNumber, String msgId, String filename) throws JMSException, IOException {
@@ -95,28 +127,40 @@ public class PoResender {
         return amqConnectionFactory;
     }
 
-    private String loadPartnerCode(String secretKey) throws SQLException {
+    private BatchData loadData(int batchNumber) throws SQLException {
         try (final Connection connection = mysqlDS.getConnection()) {
-            final PreparedStatement statement = connection.prepareStatement("select partner_code from partner where partner_key = ?");
-            statement.setString(1, secretKey);
-            final ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getString("partner_code");
-            }
-            throw new PartnerNotFound("partner is not found for given code");
-        }
-    }
-
-    private String loadMsgId(int batchNumber) throws SQLException {
-        try (final Connection connection = mysqlDS.getConnection()) {
-            final String sql = "select d.msg_id from document d join batch b on d.batch_id = b.batch_id where b.batch_number = ?";
+            final String sql = "select " +
+                    "s.partner_code as sender_code, " +
+                    "r.partner_code as receiver_code, " +
+                    "t.documenttype_code as doc_type, " +
+                    "p.sender_identifier as sender_identifier, " +
+                    "p.receiver_identifier as receiver_identifier, " +
+                    "d.document_number as document_number, " +
+                    "d.invoice_number as invoice_number, " +
+                    "d.msg_id as msg_id " +
+                    "from batch b  " +
+                    "join partnership p on p.partnership_id = b.partnership_id " +
+                    "join partner s on s.partner_id = p.sender_id " +
+                    "join partner r on r.partner_id = p.receiver_id " +
+                    "join document d on d.batch_id = b.batch_id " +
+                    "join documenttype t on t.documenttype_id = d.document_type_id " +
+                    "where b.batch_number = ?";
             final PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, batchNumber);
             final ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getString("msg_id");
+                return new BatchData(
+                        resultSet.getString("sender_code"),
+                        resultSet.getString("receiver_code"),
+                        resultSet.getString("doc_type"),
+                        resultSet.getString("msg_id"),
+                        resultSet.getString("sender_identifier"),
+                        resultSet.getString("receiver_identifier"),
+                        resultSet.getString("document_number"),
+                        resultSet.getString("invoice_number")
+                );
             }
-            throw new DocumentNotFound("can't find document for given batch number: " + batchNumber);
+            throw new PartnerNotFound("data is not found for given code");
         }
     }
 

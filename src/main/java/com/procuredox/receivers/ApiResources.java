@@ -58,7 +58,7 @@ public class ApiResources {
     public Response resendPo(ResendPORequest request) {
         final PoResender service = new PoResender();
         try {
-            service.resend(request.getSecretKey(), request.getBatchNumber(), request.getFilename());
+            service.resend(request.getBatchNumber());
             return Response.ok(new ResendPOResponse(true, null, null)).build();
         } catch (DocumentNotFound | PartnerNotFound | BatchFileNotFound e) {
             return Response.status(Response.Status.NOT_FOUND)
