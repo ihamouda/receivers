@@ -36,7 +36,7 @@ public class SetCustCode {
                         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Success(false, "Code for this vendor already exists")).build();
                     }
                 }
-                sqlQuery = "insert_cust_code(?,?,?)";
+                sqlQuery = "call insert_cust_code(?,?,?)";
                 sqlStmt = sqlConn.prepareStatement(sqlQuery);
                 sqlStmt.setString(1, custcode.getSecKey());
                 sqlStmt.setString(2, custcode.getCustCode());
@@ -47,6 +47,7 @@ public class SetCustCode {
                 sqlStmt = sqlConn.prepareStatement(sqlQuery);
                 sqlStmt.setString(1, custcode.getBuyerId());
                 sqlStmt.setString(2, custcode.getCustCodeId());
+                sqlStmt.execute();
             }
             return Response.status(Response.Status.OK).entity(new Success(true, "")).build();
         }catch (SQLException e){
