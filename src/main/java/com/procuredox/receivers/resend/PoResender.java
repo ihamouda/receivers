@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
+import javax.print.Doc;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +48,14 @@ public class PoResender {
             } else {
                 final String filename = filename(batchNumber, data);
                 changeStatusTo(data.getMsgId(), "DROPPEDVENDOR");
-                sendFileToBroker(content, data.getVendorCode(), batchNumber, data.getMsgId(), filename);
+                switch (DocType.valueOf(data.getDocType())) {
+                    case INVRES: {
+                        sendFileToBroker(content, data.getBuyerCode(), batchNumber, data.getMsgId(), filename);
+                        break;
+                    }
+                    default: sendFileToBroker(content, data.getVendorCode(), batchNumber, data.getMsgId(), filename);
+                }
+
             }
         }
     }
