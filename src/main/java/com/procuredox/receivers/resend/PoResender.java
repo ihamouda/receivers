@@ -50,7 +50,7 @@ public class PoResender {
                 changeStatusTo(data.getMsgId(), "DROPPEDVENDOR");
                 switch (DocType.valueOf(data.getDocType())) {
                     case INVRES: {
-                        sendFileToBroker(content, data.getBuyerCode(), batchNumber, data.getMsgId(), filename);
+                        sendFileToBroker(content, data.getVendorCode(), batchNumber, data.getMsgId(), filename);
                         break;
                     }
                     default: sendFileToBroker(content, data.getVendorCode(), batchNumber, data.getMsgId(), filename);
@@ -63,8 +63,8 @@ public class PoResender {
     private String fnAckFilename(int batchNumber, BatchData data) {
         final String uuid = UUID.randomUUID().toString();
         switch (DocType.valueOf(data.getDocType())) {
-            case INV: return String.format("fnAck_Invoice_%s_%s_%s.xml", batchNumber, data.getReceiverIndetifier(), normalize(uuid));
-            case POACK: return String.format("fnAck_PurchaseOrderAcknowledgement_%s_%s_%s.xml", batchNumber, data.getReceiverIndetifier(), normalize(uuid));
+            case INV: return String.format("fnAck_Invoice_%s_%s_%s.xml", batchNumber, data.getSenderIdentifier(), normalize(uuid));
+            case POACK: return String.format("fnAck_PurchaseOrderAcknowledgement_%s_%s_%s.xml", batchNumber, data.getBuyerCode(), normalize(uuid));
             default: return "fnAck.xml";
         }
     }
