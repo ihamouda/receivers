@@ -2,12 +2,10 @@ package com.procuredox.receivers.cat;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.procuredox.receivers.*;
+import com.procuredox.receivers.cat.cXML.CXML;
+import com.procuredox.receivers.cat.cXML.PostalAddress;
 import com.procuredox.receivers.cat.responsemessage.OrderType;
-import com.procuredox.receivers.ordermessage.Extrinsic;
-import com.procuredox.receivers.ordermessage.ItemIn;
-import com.procuredox.receivers.ordermessage.PunchOutOrderMessage;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -15,10 +13,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.tools.generic.NumberTool;
-import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.glassfish.jersey.internal.util.Base64;
 
 import javax.ws.rs.core.Response;
@@ -52,46 +47,31 @@ public class OrderMessage {
             String cXml = new String(decodedBytes, StandardCharsets.UTF_8);
             cXml = cXml.replaceAll("<!DOCTYPE.*cXML.dtd\">", "");
             SimpleDateFormat formatIn = new SimpleDateFormat("yyyy-MM-dd");
-            Order order = new Order();
+            final Unmarshaller unmarshaller = JAXBContext.newInstance(CXML.class).createUnmarshaller();
             InputStream is = new ByteArrayInputStream(cXml.getBytes());
-            SAXReader reader = new SAXReader();
-            Document doc = reader.read(is);
-            Element elm = (Element)doc.getRootElement().selectSingleNode("/cXML/Message/PunchOutOrderMessage");
-            JAXBContext jaxBCtx = JAXBContext.newInstance(PunchOutOrderMessage.class);
-            Unmarshaller unmarshaller = jaxBCtx.createUnmarshaller();
-            PunchOutOrderMessage message = (PunchOutOrderMessage) unmarshaller.unmarshal(
-                    new ByteArrayInputStream(elm.asXML().getBytes()));
-            order.setBatchNumber(batchNumber);
-            Address address = new Address();
-            address.setStreet(message.getPunchOutOrderMessageHeader().getShipTo().getAddress().getPostalAddress()
-                    .getStreet().get(0).getvalue().trim());
-            address.setCity(message.getPunchOutOrderMessageHeader().getShipTo().getAddress()
-                    .getPostalAddress().getCity().getvalue().trim());
-            address.setProvince(message.getPunchOutOrderMessageHeader().getShipTo().getAddress()
-                    .getPostalAddress().getState().getvalue().trim());
-            address.setPostalCode(message.getPunchOutOrderMessageHeader().getShipTo()
-                    .getAddress().getPostalAddress().getPostalCode().trim());
-            address.setCountry(message.getPunchOutOrderMessageHeader().getShipTo().getAddress().getPostalAddress()
-                    .getCountry().getIsoCountryCode().trim());
+            CXML cxmIn = (CXML)unmarshaller.unmarshal(is);
+            com.procuredox.receivers.cat.cXML.PunchOutOrderMessage message = (com.procuredox.receivers.cat.cXML.PunchOutOrderMessage)cxmIn.getHeaderOrMessageOrRequestOrResponse().get(0);
+            Order order = new Order();
+            PostalAddress postalAddress = message.getPunchOutOrderMessageHeader().getShipTo().getAddress().getPostalAddress();
+            com.procuredox.receivers.cat.Address address = new com.procuredox.receivers.cat.Address();
+            address.setStreet(postalAddress.getStreet().get(0).getvalue());
+            address.setCity(postalAddress.getCity().getvalue());
+            address.setCountry(postalAddress.getCountry().getvalue());
+            address.setProvince(postalAddress.getState().getvalue());
+            address.setPostalCode(postalAddress.getPostalCode());
             ShipTo shipTo = new ShipTo();
-            shipTo.setShipToName(message.getPunchOutOrderMessageHeader().getShipTo()
-                    .getAddress().getName().getvalue().trim());
             shipTo.setAddress(address);
-            shipTo.setPaymentInstructions(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference()
-                    .stream().filter(e ->e.getDomain().equals("shipInstr")).collect(Collectors.toList())
-                    .get(0).getDescription().getvalue().trim());
-            shipTo.setDeliveryLocation(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference()
-                    .stream().filter(e -> e.getDomain().equals("deliveryLocation")).collect(Collectors.toList()).get(0).getDescription()
-                    .getvalue().trim());
+            shipTo.setShipToName(message.getPunchOutOrderMessageHeader().getShipTo().getAddress().getName().getvalue());
+            shipTo.setPaymentInstructions(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference().
+                    stream().filter(e ->e.getDomain().equals("shipInstr")).collect(Collectors.toList()).get(0).getDescription().getvalue().trim());
+            shipTo.setDeliveryLocation(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference().
+                    stream().filter(e -> e.getDomain().equals("deliveryLocation")).collect(Collectors.toList()).get(0).getDescription().getvalue().trim());
             shipTo.setAccountName(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference()
                     .stream().filter(e->e.getDomain().equals("accountNum")).collect(Collectors.toList()).get(0)
                     .getDescription().getvalue().trim());
             shipTo.setAccountNum(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference()
                     .stream().filter(e->e.getDomain().equals("accountNum")).collect(Collectors.toList()).get(0)
                     .getIdentifier().trim());
-            shipTo.setSupplierReference(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference()
-                    .stream().filter(e->e.getDomain().equals("supplierReference")).collect(Collectors.toList()).get(0)
-                    .getDescription().getvalue().trim());
             shipTo.setShipVia(message.getPunchOutOrderMessageHeader().getShipTo().getIdReference()
                     .stream().filter(e->e.getDomain().equals("shipVia")).collect(Collectors.toList()).get(0)
                     .getDescription().getvalue().trim());
@@ -104,7 +84,6 @@ public class OrderMessage {
             shipTo.setShippingInstructions(message.getPunchOutOrderMessageHeader().getShipTo()
                     .getTransportInformation().get(0).getShippingInstructions().getDescription().getvalue().trim());
             List<SpecialInstruction> specialInstructions = new ArrayList<>();
-
             String instructions = message.getPunchOutOrderMessageHeader().getShipping()
                     .getDescription().getvalue();
             if(instructions != null && !instructions.isEmpty()) {
@@ -127,16 +106,16 @@ public class OrderMessage {
             order.setSupplierOrderReference(message.getPunchOutOrderMessageHeader().getSupplierOrderInfo().getOrderID().trim());
             order.setCurrency(message.getPunchOutOrderMessageHeader().getTotal().getMoney().getCurrency().trim());
             order.setTotalAmount(Double.parseDouble(message.getPunchOutOrderMessageHeader().getTotal().getMoney().getvalue().trim()));
-            List<ItemIn> items = message.getItemIn();
+            List<com.procuredox.receivers.cat.cXML.ItemIn> items = message.getItemIn();
             List<Item> list = new ArrayList<>();
-            for(ItemIn item: items){
+            for(com.procuredox.receivers.cat.cXML.ItemIn item: items){
                 Item listItem = new Item();
                 boolean coreCharge = item.getItemID().getIdReference().stream()
                         .filter(e -> e.getDomain().equals("core")).
                                 collect(Collectors.toList()).get(0).getIdentifier().equals("Y");
                 listItem.setCoreCharge(coreCharge);
                 listItem.setDescription(item.getItemDetail().getDescription().get(0).getvalue().trim());
-                listItem.setUnitOfMeasure(item.getItemDetail().getUnitOfMeasure().getvalue().trim());
+                listItem.setUnitOfMeasure(item.getItemDetail().getUnitOfMeasure());
                 listItem.setUnitPrice(Double.parseDouble(item.getItemDetail().getUnitPrice().getMoney().getvalue().trim()));
                 listItem.setLineNumber(Integer.parseInt(item.getLineNumber().trim()));
                 Integer lead = Integer.parseInt(item.getItemDetail().getLeadTime().trim());
@@ -144,14 +123,12 @@ public class OrderMessage {
                 String dateLead = formatIn.format(c.getTime());
                 listItem.setDeliveryDate(formatIn.parse(dateLead));
                 listItem.setQuantity(Double.parseDouble(item.getQuantity()));
-//                if(items.indexOf(item) == 0)
-//                    order.setExpectedDate(formatIn.parse(item.getItemDetail().getLeadTime().trim()));
                 listItem.setSupplierPartId(item.getItemID().getSupplierPartID().getvalue().trim());
                 listItem.setSupplierPartAuxiliaryId(item.getItemID().getSupplierPartAuxiliaryID().getContent().get(0).toString().
                         trim());
-                List<Extrinsic> extrinsics = item.getItemDetail().getExtrinsic();
+                List<com.procuredox.receivers.cat.cXML.Extrinsic> extrinsics = item.getItemDetail().getExtrinsic();
                 List<ItemQuantity> quantities = new ArrayList<>();
-                for(Extrinsic ex: extrinsics){
+                for(com.procuredox.receivers.cat.cXML.Extrinsic ex: extrinsics){
                     ItemQuantity quantity = new ItemQuantity(Double.parseDouble(ex.getContent().get(0).toString().trim()),
                             ex.getName().trim());
                     quantities.add(quantity);
@@ -167,8 +144,6 @@ public class OrderMessage {
             XmlMapper mapper = new XmlMapper();
             String xml = mapper.writeValueAsString(order);
             xml = xml.replaceAll("xmlns=\"\"","");
-            /*File xmlFile = new File("c:/Users/ihamouda/Documents/order.xml");
-            FileUtils.writeStringToFile(xmlFile,xml);*/
             FileUtils.writeByteArrayToFile(
                     new File(BATCHPATH+batchNumber.toString()+"/pdox_order.xml"), xml.getBytes());
             JAXBContext orderCtx = JAXBContext.newInstance(OrderType.class);
