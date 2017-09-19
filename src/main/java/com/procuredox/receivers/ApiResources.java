@@ -109,6 +109,15 @@ public class ApiResources {
     }
 
     @POST
+    @Path("/checkinvcustcode")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response checkInvCustCode(CheckCustCodeRequest request){
+        final CheckInvCustCode code = new CheckInvCustCode();
+        return code.checkCustCode(request.getSecKey(), request.getCustCode());
+    }
+
+    @POST
     @Path("/checkseckey")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
