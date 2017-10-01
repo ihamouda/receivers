@@ -4,6 +4,27 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
     <display-name>ProcureDox Receivers Ports</display-name>
+    <listener>
+        <listener-class>com.procuredox.receivers.servlet.PropsContextListener</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>amq.url</param-name>
+        <param-value>${amq.url}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>amq.user</param-name>
+        <param-value>${amq.user}</param-value>
+    </context-param>
+    <context-param>
+        <param-name>amq.pass</param-name>
+        <param-value>${amq.pass}</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>com.procuredox.receivers.servlet.AMQContextListener</listener-class>
+    </listener>
+    
     <servlet>
         <servlet-name>receivers</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>

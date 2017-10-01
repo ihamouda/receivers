@@ -29,7 +29,7 @@ public class AppResources {
             if(os.isWindows())
                 file = new File("C:/Apps/Resources");
             else if(os.isUnix())
-                file = new File("/data/Resources");
+                file = new File("~/workdata");
             URL[] urls = {file.toURI().toURL()};
             ClassLoader loader = new URLClassLoader(urls);
             rb = ResourceBundle.getBundle("adApi", Locale.US,loader);

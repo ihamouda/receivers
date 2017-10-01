@@ -6,11 +6,15 @@ import com.procuredox.receivers.service.storage.StorageService;
 import com.procuredox.receivers.services.DocumentService;
 import com.procuredox.receivers.services.KeyDocNotValid;
 import com.procuredox.receivers.services.NotAuthorized;
-import org.apache.camel.ProducerTemplate;
 import org.dom4j.DocumentHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.StreamMessage;
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -34,6 +38,8 @@ public class DocumentResource {
 
     @Context
     private StorageService storageService;
+    @Context
+    private ServletContext servletContext;
 
     private DocumentService documentService;
 
@@ -50,10 +56,10 @@ public class DocumentResource {
 
             final String normalizedFilename = filename.toLowerCase();
             if (normalizedFilename.endsWith(".pdf")) {
+                log.info("document processing success.");
                 return Utils.restOk(new AttachmentResponseModel(
                         filename + ":" + Utils.currentTime() + " : Receive",
                         true));
-                log.info("document processing success.");
             } else {
                 Map<String,Object> headers = new HashMap<>();
 
@@ -66,8 +72,16 @@ public class DocumentResource {
                 fillFromModel(headers, packageInfo);
 
                 if (FUNCTIONAL_ACKNOWLEDGEMENT.equals(root)) {
-                    ProducerTemplate template = exchange.getContext().createProducerTemplate();
-                    template.sendBodyAndHeaders("direct-vm:vendor.in.func", xml, headers);
+                    final Session session = (Session) servletContext.getAttribute("AMQSession");
+                    final Queue queue = session.createQueue("vendor.in.func");
+                    final MessageProducer producer = session.createProducer(queue);
+
+                    final StreamMessage streamMessage = session.createStreamMessage();
+                    for (Map.Entry<String, Object> entry : headers.entrySet()) {
+                        streamMessage.setStringProperty(entry.getKey(), (String)entry.getValue());
+                    }
+
+                    producer.send(queue, streamMessage);
 
                     final String message = filename + ":" + Utils.currentTime() + ": Received Successfuly";
                     log.info("functional acknowledgement processing success.");
@@ -83,8 +97,16 @@ public class DocumentResource {
 
                 fillFromProperties(headers, props);
 
-                ProducerTemplate template = exchange.getContext().createProducerTemplate();
-                template.sendBodyAndHeaders("direct-vm:vendor.in.start", xml, headers);
+                final Session session = (Session) servletContext.getAttribute("AMQSession");
+                final Queue queue = session.createQueue("vendor.in.start");
+                final MessageProducer producer = session.createProducer(queue);
+
+                final StreamMessage streamMessage = session.createStreamMessage();
+                for (Map.Entry<String, Object> entry : headers.entrySet()) {
+                    streamMessage.setStringProperty(entry.getKey(), (String)entry.getValue());
+                }
+
+                producer.send(queue, streamMessage);
 
                 final String message = filename + ":" + Utils.currentTime() + ": Batch Number: " + batchNumber + " Received Successfuly";
                 log.info("document processing success.");
@@ -121,5 +143,9 @@ public class DocumentResource {
 
     public void setStorageService(StorageService storageService) {
         this.storageService = storageService;
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }
