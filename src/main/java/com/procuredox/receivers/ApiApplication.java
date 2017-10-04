@@ -5,7 +5,9 @@ import com.procuredox.receivers.service.storage.StorageProvider;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Context;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,11 +16,11 @@ import java.util.logging.Logger;
  */
 @ApplicationPath("/")
 public class ApiApplication extends ResourceConfig {
+    private static final int MB_5 = 1024 * 1024 * 5;
 
-    public static final int MB_5 = 1024 * 1024 * 5;
-
-    public ApiApplication(){
-        register(StorageProvider.bind(AppResources.getInstance().getRb().getString("unc")));
+    public ApiApplication(@Context ServletContext servletContext) {
+        final String unc = (String) servletContext.getAttribute("unc");
+        register(StorageProvider.bind(unc));
         register(ApiResources.class);
         register(DocumentResource.class);
         register(new LoggingFeature(Logger.getLogger("InOut"), Level.INFO, LoggingFeature.Verbosity.PAYLOAD_ANY, MB_5));
