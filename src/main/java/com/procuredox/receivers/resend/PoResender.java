@@ -159,8 +159,8 @@ public class PoResender {
             final ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new BatchData(
-                        resultSet.getString("sender_code"),
                         resultSet.getString("receiver_code"),
+                        resultSet.getString("sender_code"),
                         resultSet.getString("doc_type"),
                         resultSet.getString("msg_id"),
                         resultSet.getString("sender_identifier"),
