@@ -17,6 +17,12 @@ public class DocumentServiceImpl implements DocumentService {
     private DocumentDao documentDao;
     private BatchNumberDao batchNumberDao;
 
+    DocumentServiceImpl(PartnerDao partnerDao, DocumentDao documentDao, BatchNumberDao batchNumberDao) {
+        this.partnerDao = partnerDao;
+        this.documentDao = documentDao;
+        this.batchNumberDao = batchNumberDao;
+    }
+
     @Override
     public BatchedProperties find(String secKey, String rootName) {
         final String partner = partnerDao.findPartnerBySecKey(secKey);
