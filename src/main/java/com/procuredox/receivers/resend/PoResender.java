@@ -43,7 +43,7 @@ public class PoResender {
             final BatchData data = loadData(batchNumber);
             if (content.contains("FunctionalAcknowledgement")) {
                 final String filename = fnAckFilename(batchNumber, data);
-                sendFileToBroker(content, data.getVendorCode(), batchNumber, null, filename);
+                sendFileToBroker(content, data.getBuyerCode(), batchNumber, null, filename);
             } else {
                 final String filename = filename(batchNumber, data);
                 changeStatusTo(data.getMsgId(), "DROPPEDVENDOR");
