@@ -62,7 +62,7 @@ public class ApiResources {
             service.resend(request.getBatchNumber());
             return Response.ok(new ResendPOResponse(true, null, null)).build();
         } catch (DocumentNotFound | PartnerNotFound | BatchFileNotFound e) {
-            return Response.status(Response.Status.NOT_FOUND)
+            return Response.status(Response.Status.NO_CONTENT)
                     .entity(new ResendPOResponse(false, e.getMessage(), null))
                     .build();
         } catch (Exception e) {
