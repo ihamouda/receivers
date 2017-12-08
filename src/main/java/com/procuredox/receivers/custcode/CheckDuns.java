@@ -12,8 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CheckInvCustCode {
-    private static final Logger log = LoggerFactory.getLogger(CheckCustCode.class);
+public class CheckDuns {
+    private static final Logger log = LoggerFactory.getLogger(CheckCustCodeByID.class);
     private AppResources rb = AppResources.getInstance();
     final Utils utils = Utils.getInstance();
     final MyDataSourceFactory factory= MyDataSourceFactory.getInstance();
@@ -22,28 +22,25 @@ public class CheckInvCustCode {
     private java.sql.Connection sqlConn;
     private ResultSet sqlRs;
 
-    public Response checkCustCode(String secKey, String custCode){
+    public Response checkDuns(String duns){
         try{
-            String sqlQuery = "select check_inv_custcode_byid_exists(?,?)";
             sqlConn = mysqlDS.getConnection();
+            String sqlQuery = "select partner_name , partner_id from partner where partner_duns = ?";
             sqlStmt = sqlConn.prepareStatement(sqlQuery);
-            sqlStmt.setString(1, secKey);
-            sqlStmt.setString(2, custCode);
+            sqlStmt.setString(1, duns);
             sqlRs = sqlStmt.executeQuery();
-            while (sqlRs.next()){
-                if (sqlRs.getInt(1) == 0){
-                    sqlRs.close();
-                    sqlStmt.close();
-                    sqlConn.close();
-                    return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(false)).build();
-                }else{
-                    sqlRs.close();
-                    sqlStmt.close();
-                    sqlConn.close();
-                    return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(true)).build();
+            if (!sqlRs.isBeforeFirst()){
+                return Response.status(Response.Status.OK).entity(new CheckDunsResponse()).build();
+            }else {
+                while (sqlRs.next()){
+                    if (sqlRs.getString(1) == null || sqlRs.getString(1).isEmpty()){
+                        return Response.status(Response.Status.OK).entity(new CheckDunsResponse()).build();
+                    }else {
+                        return Response.status(Response.Status.OK).entity(new CheckDunsResponse(true, sqlRs.getString(1),sqlRs.getString(2))).build();
+                    }
                 }
             }
-            return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(false)).build();
+            return Response.status(Response.Status.OK).entity(new CheckDunsResponse()).build();
         }catch (SQLException e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Success(false, e.getMessage())).build();
         }catch (Exception e){

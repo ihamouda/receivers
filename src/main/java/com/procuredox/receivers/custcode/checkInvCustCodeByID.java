@@ -12,8 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CheckInvCustCode {
-    private static final Logger log = LoggerFactory.getLogger(CheckCustCode.class);
+public class CheckInvCustCodeByID {
+    private static final Logger log = LoggerFactory.getLogger(CheckCustCodeByID.class);
     private AppResources rb = AppResources.getInstance();
     final Utils utils = Utils.getInstance();
     final MyDataSourceFactory factory= MyDataSourceFactory.getInstance();
@@ -22,12 +22,12 @@ public class CheckInvCustCode {
     private java.sql.Connection sqlConn;
     private ResultSet sqlRs;
 
-    public Response checkCustCode(String secKey, String custCode){
+    public Response checkInvCustCodebyID(String vendorId, String custCode){
         try{
-            String sqlQuery = "select check_inv_custcode_byid_exists(?,?)";
+            String sqlQuery = "select check_inv_custcode_exists(?,?)";
             sqlConn = mysqlDS.getConnection();
             sqlStmt = sqlConn.prepareStatement(sqlQuery);
-            sqlStmt.setString(1, secKey);
+            sqlStmt.setString(1, vendorId);
             sqlStmt.setString(2, custCode);
             sqlRs = sqlStmt.executeQuery();
             while (sqlRs.next()){
@@ -35,15 +35,15 @@ public class CheckInvCustCode {
                     sqlRs.close();
                     sqlStmt.close();
                     sqlConn.close();
-                    return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(false)).build();
+                    return Response.status(Response.Status.OK).entity(new CheckCustCodeByIDResponse(false)).build();
                 }else{
                     sqlRs.close();
                     sqlStmt.close();
                     sqlConn.close();
-                    return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(true)).build();
+                    return Response.status(Response.Status.OK).entity(new CheckCustCodeByIDResponse(true)).build();
                 }
             }
-            return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(false)).build();
+            return Response.status(Response.Status.OK).entity(new CheckCustCodeByIDResponse(false)).build();
         }catch (SQLException e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Success(false, e.getMessage())).build();
         }catch (Exception e){

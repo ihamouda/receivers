@@ -82,12 +82,30 @@ public class ApiResources {
     }
 
     @POST
+    @Path("/custcodepartnersbyid")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustCodesPartnersByID(CustCodePartnersByIDRequest request){
+        final GetCustomersByID customers = new GetCustomersByID();
+        return customers.getCustomersByID(request.getvendorId());
+    }
+
+    @POST
     @Path("/custcodesearch")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCustCodesSearch(CustCodeSearchRequest request){
         final GetCustCodes codes = new GetCustCodes();
         return codes.getCustCodes(request.getSecKey(), request.getSearch());
+    }
+
+    @POST
+    @Path("/custcodesearchbyid")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustCodesSearchByID(CustCodeSearchByIDRequest request){
+        final GetCustCodesByID codes = new GetCustCodesByID();
+        return codes.getCustCodes(request.getvendorId(), request.getSearch());
     }
 
     @POST
@@ -100,12 +118,30 @@ public class ApiResources {
     }
 
     @POST
+    @Path("/setcustcodebyid")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setCustCodeByID(SetCustCodeByIDRequest request){
+        final SetCustCodeByID custcode = new SetCustCodeByID();
+        return custcode.setCustCodeByID(request);
+    }
+
+    @POST
     @Path("/checkcustcode")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response checkCustCode(CheckCustCodeRequest request){
         final CheckCustCode code = new CheckCustCode();
         return code.checkCustCode(request.getSecKey(), request.getCustCode());
+    }
+
+    @POST
+    @Path("/checkcustcodebyid")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response checkCustCodeByID(CheckCustCodeByIDRequest request){
+        final CheckCustCodeByID code = new CheckCustCodeByID();
+        return code.checkCustCodeByID(request.getvendorId(), request.getCustCode());
     }
 
     @POST
@@ -118,6 +154,15 @@ public class ApiResources {
     }
 
     @POST
+    @Path("/checkduns")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response checkDuns(CheckDunsRequest request){
+        final CheckDuns key = new CheckDuns();
+        return key.checkDuns(request.getDuns());
+    }
+
+    @POST
     @Path("/checkseckey")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -125,6 +170,8 @@ public class ApiResources {
         final CheckSecKey key = new CheckSecKey();
         return key.checkSecKey(request.getSecKey());
     }
+
+
 
     @POST
     @Path("deletecustcode")
@@ -134,4 +181,6 @@ public class ApiResources {
         final DeleteCustCode custCode = new DeleteCustCode();
         return custCode.deleteCustCode(request);
     }
+
+
 }

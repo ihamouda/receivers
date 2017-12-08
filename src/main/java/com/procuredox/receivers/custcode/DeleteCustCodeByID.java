@@ -12,8 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CheckInvCustCode {
-    private static final Logger log = LoggerFactory.getLogger(CheckCustCode.class);
+public class DeleteCustCodeByID {
+    private static final Logger log = LoggerFactory.getLogger(DeleteCustCodeByID.class);
     private AppResources rb = AppResources.getInstance();
     final Utils utils = Utils.getInstance();
     final MyDataSourceFactory factory= MyDataSourceFactory.getInstance();
@@ -22,28 +22,14 @@ public class CheckInvCustCode {
     private java.sql.Connection sqlConn;
     private ResultSet sqlRs;
 
-    public Response checkCustCode(String secKey, String custCode){
+    public Response deleteCustCodeByID(DeleteCustCodeByIDRequest custCode){
         try{
-            String sqlQuery = "select check_inv_custcode_byid_exists(?,?)";
             sqlConn = mysqlDS.getConnection();
-            sqlStmt = sqlConn.prepareStatement(sqlQuery);
-            sqlStmt.setString(1, secKey);
-            sqlStmt.setString(2, custCode);
-            sqlRs = sqlStmt.executeQuery();
-            while (sqlRs.next()){
-                if (sqlRs.getInt(1) == 0){
-                    sqlRs.close();
-                    sqlStmt.close();
-                    sqlConn.close();
-                    return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(false)).build();
-                }else{
-                    sqlRs.close();
-                    sqlStmt.close();
-                    sqlConn.close();
-                    return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(true)).build();
-                }
-            }
-            return Response.status(Response.Status.OK).entity(new CheckCustCodeResponse(false)).build();
+            sqlStmt = sqlConn.prepareStatement("call delete_cust_code_byid(?,?)");
+            sqlStmt.setString(1, custCode.getvendorId());
+            sqlStmt.setString(2, custCode.getCustCodeId());
+            sqlStmt.execute();
+            return Response.status(Response.Status.OK).entity(new Success(true, "")).build();
         }catch (SQLException e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Success(false, e.getMessage())).build();
         }catch (Exception e){
