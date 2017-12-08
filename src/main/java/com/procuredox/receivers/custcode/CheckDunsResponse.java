@@ -9,6 +9,7 @@ public class CheckDunsResponse {
         this.exists = exists;
         this.vendorName = vendorName;
         this.vendorId = vendorId;
+
     }
 
     public CheckDunsResponse() {

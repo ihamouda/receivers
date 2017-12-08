@@ -184,5 +184,14 @@ public class ApiResources {
         return custCode.deleteCustCode(request);
     }
 
+    @POST
+    @Path("deletecustcodebyid")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteCustCodeByID(DeleteCustCodeByIDRequest request){
+        final DeleteCustCodeByID custCode = new DeleteCustCodeByID();
+        return custCode.deleteCustCodeByID(request);
+    }
+
 
 }
