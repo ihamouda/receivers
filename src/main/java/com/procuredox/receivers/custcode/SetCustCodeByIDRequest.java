@@ -6,6 +6,7 @@ public class SetCustCodeByIDRequest {
     private String custCode;
     private String buyerId;
 
+
     public SetCustCodeByIDRequest(String vendorId, String custCodeId, String custCode, String buyerId) {
         this.vendorId = vendorId;
         this.custCodeId = custCodeId;

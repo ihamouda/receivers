@@ -26,7 +26,7 @@ public class SetCustCodeByID {
         try{
             sqlConn = mysqlDS.getConnection();
             if(custcode.getCustCodeId() == null){
-                String sqlQuery = "select check_cust_code_exists(?,?)";
+                String sqlQuery = "select check_cust_code_byid_exists(?,?)";
                 sqlStmt = sqlConn.prepareStatement(sqlQuery);
                 sqlStmt.setString(1, custcode.getvendorId());
                 sqlStmt.setString(2, custcode.getCustCode());
@@ -36,7 +36,7 @@ public class SetCustCodeByID {
                         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Success(false, "Code for this vendor already exists")).build();
                     }
                 }
-                sqlQuery = "call insert_cust_code(?,?,?)";
+                sqlQuery = "call insert_cust_code_byid(?,?,?)";
                 sqlStmt = sqlConn.prepareStatement(sqlQuery);
                 sqlStmt.setString(1, custcode.getvendorId());
                 sqlStmt.setString(2, custcode.getCustCode());
