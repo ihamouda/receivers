@@ -22,7 +22,7 @@ public class CheckInvCustCodeByID {
     private java.sql.Connection sqlConn;
     private ResultSet sqlRs;
 
-    public Response checkInvCustCodebyID(String vendorId, String custCode){
+    public Response checkInvCustCodeByID(String vendorId, String custCode){
         try{
             String sqlQuery = "select check_inv_custcode_exists(?,?)";
             sqlConn = mysqlDS.getConnection();
