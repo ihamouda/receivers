@@ -4,10 +4,7 @@ import com.procuredox.receivers.cat.CatConfirm;
 import com.procuredox.receivers.cat.OrderMessage;
 
 import com.procuredox.receivers.custcode.*;
-import com.procuredox.receivers.resend.BatchFileNotFound;
-import com.procuredox.receivers.resend.DocumentNotFound;
-import com.procuredox.receivers.resend.PartnerNotFound;
-import com.procuredox.receivers.resend.PoResender;
+import com.procuredox.receivers.resend.*;
 import com.procuredox.receivers.tradeshift.Receive;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
@@ -58,6 +55,26 @@ public class ApiResources {
     @Produces(MediaType.APPLICATION_JSON)
     public Response resendPo(ResendPORequest request) {
         final PoResender service = new PoResender();
+        try {
+            service.resend(request.getBatchNumber());
+            return Response.ok(new ResendPOResponse(true, null, null)).build();
+        } catch (DocumentNotFound | PartnerNotFound | BatchFileNotFound e) {
+            return Response.status(Response.Status.NO_CONTENT)
+                    .entity(new ResendPOResponse(false, e.getMessage(), null))
+                    .build();
+        } catch (Exception e) {
+            return Response.serverError()
+                    .entity(new ResendPOResponse(false, e.getMessage(), ExceptionUtils.getFullStackTrace(e)))
+                    .build();
+        }
+    }
+
+    @POST
+    @Path("/resend")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response resendBatch(ResendPORequest request) {
+        final VendorResender service = new VendorResender();
         try {
             service.resend(request.getBatchNumber());
             return Response.ok(new ResendPOResponse(true, null, null)).build();
