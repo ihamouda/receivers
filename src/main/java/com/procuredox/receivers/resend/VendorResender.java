@@ -142,7 +142,7 @@ public class VendorResender {
             final String sql = "call vendor_doc_xpath(?, ?)";
             final PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, securityKey);
-            statement.setString(1, rootName);
+            statement.setString(2, rootName);
             final ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new XpathsData(
