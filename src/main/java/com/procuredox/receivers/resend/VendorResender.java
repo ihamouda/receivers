@@ -83,7 +83,8 @@ public class VendorResender {
         }
 
         final XpathsData xpathsData = loadData(securityKey, rootName);
-        sendFileToBroker(session, file, batchNumber, xpathsData, transmitType, securityKey, rootName);
+        final IdsData idsData = loadResendHeaders(batchNumber);
+        sendFileToBroker(session, file, batchNumber, xpathsData, idsData, transmitType, securityKey, rootName);
     }
 
     private ActiveMQConnectionFactory getAMQFactory() {
@@ -93,7 +94,7 @@ public class VendorResender {
         return amqConnectionFactory;
     }
 
-    private void sendFileToBroker(String sessionName, File file, int batchNumber, XpathsData data, String transmitType, String secKey, String rootName) throws JMSException, IOException {
+    private void sendFileToBroker(String sessionName, File file, int batchNumber, XpathsData data, IdsData idsData, String transmitType, String secKey, String rootName) throws JMSException, IOException {
         final ActiveMQConnectionFactory amqConnectionFactory = getAMQFactory();
 
         final javax.jms.Connection connection = amqConnectionFactory.createConnection();
@@ -106,8 +107,12 @@ public class VendorResender {
 
                 final MessageProducer producer = session.createProducer(queue);
                 final TextMessage message = session.createTextMessage();
+                message.setBooleanProperty("IsResend", true);
                 message.setStringProperty("Folder", sessionName);
                 message.setStringProperty("BatchNumber", String.valueOf(batchNumber));
+                message.setStringProperty("DocumentId", idsData.getDocumentId());
+                message.setStringProperty("BatchId", idsData.getBatchId());
+                message.setStringProperty("MsgId", idsData.getMsgId());
                 message.setStringProperty("TransmitType", transmitType);
                 message.setStringProperty("SecurityKey", secKey);
                 message.setStringProperty("file_name", file.getName());
@@ -156,6 +161,30 @@ public class VendorResender {
                         resultSet.getString("hascode"));
             }
             throw new PartnerNotFound("data is not found for given code");
+        }
+    }
+
+    private IdsData loadResendHeaders(int batchNumber) throws SQLException {
+        try (final java.sql.Connection connection = mysqlDS.getConnection()) {
+            final String sql = "select " +
+                    "d.document_id as document_id, " +
+                    "b.batch_id as batch_id, " +
+                    "d.msg_id as msg_id " +
+                    "from batch b  " +
+                    "join partnership p on p.partnership_id = b.partnership_id " +
+                    "join document d on d.batch_id = b.batch_id " +
+                    "where b.batch_number = ?";
+            final PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, batchNumber);
+            final ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return new IdsData(
+                        resultSet.getString("document_id"),
+                        resultSet.getString("batch_id"),
+                        resultSet.getString("msg_id")
+                );
+            }
+            throw new PartnerNotFound("ids is not found for given code");
         }
     }
 
