@@ -186,7 +186,7 @@ public class VendorResender {
     private Stream<Path> findFiles(int batchNumber, String extension) {
         final String location = directoryForBatch(batchNumber);
 
-        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(location), "*.{" + extension +"}")) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(location), "*." + extension)) {
             return StreamSupport.stream(directoryStream.spliterator(), false)
                     .filter(Files::isRegularFile);
         } catch (IOException e) {
