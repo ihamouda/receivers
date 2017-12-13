@@ -11,10 +11,7 @@ import javax.jms.*;
 import javax.sql.DataSource;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,9 +19,12 @@ import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -34,10 +34,12 @@ public class VendorResender {
     private static final Logger log = LoggerFactory.getLogger(PoResender.class);
 
     private static final String BATCH_PATH;
+    private static final String SESSION_PATH;
     private static final String BROKER_URL;
     static {
         final AppResources resources = AppResources.getInstance();
         BATCH_PATH = resources.getRb().getString("unc") + "Share/Attachments/";
+        SESSION_PATH = resources.getRb().getString("unc") + "Sessions/";
         BROKER_URL = resources.getRb().getString("amq");
     }
 
@@ -52,7 +54,11 @@ public class VendorResender {
         String securityKey = null;
         String transmitType = null;
 
-        final File file = findFile(batchNumber);
+        final String session = UUID.randomUUID().toString();
+
+        copyPdfToSession(batchNumber, session);
+
+        final File file = findXmlFile(batchNumber);
         try (final InputStream is = new FileInputStream(file)) {
             final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             XMLStreamReader reader = null;
@@ -79,7 +85,7 @@ public class VendorResender {
         }
 
         final XpathsData xpathsData = loadData(securityKey, rootName);
-        sendFileToBroker(file, batchNumber, xpathsData, transmitType, securityKey, rootName);
+        sendFileToBroker(session, file, batchNumber, xpathsData, transmitType, securityKey, rootName);
     }
 
     private ActiveMQConnectionFactory getAMQFactory() {
@@ -89,7 +95,7 @@ public class VendorResender {
         return amqConnectionFactory;
     }
 
-    private void sendFileToBroker(File file, int batchNumber, XpathsData data, String transmitType, String secKey, String rootName) throws JMSException, IOException {
+    private void sendFileToBroker(String sessionName, File file, int batchNumber, XpathsData data, String transmitType, String secKey, String rootName) throws JMSException, IOException {
         final ActiveMQConnectionFactory amqConnectionFactory = getAMQFactory();
 
         final javax.jms.Connection connection = amqConnectionFactory.createConnection();
@@ -102,7 +108,7 @@ public class VendorResender {
 
                 final MessageProducer producer = session.createProducer(queue);
                 final TextMessage message = session.createTextMessage();
-                message.setStringProperty("Folder", UUID.randomUUID().toString());
+                message.setStringProperty("Folder", sessionName);
                 message.setStringProperty("BatchNumber", String.valueOf(batchNumber));
                 message.setStringProperty("TransmitType", transmitType);
                 message.setStringProperty("SecurityKey", secKey);
@@ -155,16 +161,34 @@ public class VendorResender {
         }
     }
 
-    private File findFile(int batchNumber) {
+    private void copyPdfToSession(int batchNumber, String session) {
+        final String location = directoryForSession(session);
+        findPdfFiles(batchNumber).forEach(pdf -> {
+            try (final OutputStream out = Files.newOutputStream(Paths.get(location, pdf.getFileName().toString()))) {
+                Files.copy(pdf, out);
+            } catch (IOException e) {
+                throw new RuntimeException("can't copy pdf to session", e);
+            }
+        });
+    }
+
+    private List<Path> findPdfFiles(int batchNumber) {
+        return findFiles(batchNumber, "pdf")
+                        .collect(Collectors.toList());
+    }
+
+    private File findXmlFile(int batchNumber) {
+        final Optional<Path> pathOptional = findFiles(batchNumber, "xml").findFirst();
+        return pathOptional.map(Path::toFile)
+                .orElseThrow(() -> new BatchFileNotFound("can't locate file for batch: " + batchNumber));
+    }
+
+    private Stream<Path> findFiles(int batchNumber, String extension) {
         final String location = directoryForBatch(batchNumber);
 
-        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(location), "*.{pdf,xml}")) {
-            final Optional<Path> pathOptional = StreamSupport.stream(directoryStream.spliterator(), false)
-                    .filter(Files::isRegularFile)
-                    .findFirst();
-
-            return pathOptional.map(Path::toFile)
-                    .orElseThrow(() -> new BatchFileNotFound("can't locate file for batch: " + batchNumber));
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(location), "*.{" + extension +"}")) {
+            return StreamSupport.stream(directoryStream.spliterator(), false)
+                    .filter(Files::isRegularFile);
         } catch (IOException e) {
             throw new RuntimeException("can't read batch directory", e);
         }
@@ -172,6 +196,10 @@ public class VendorResender {
 
     private String directoryForBatch(int batchNumber) {
         return BATCH_PATH + batchNumber;
+    }
+
+    private String directoryForSession(String session) {
+        return SESSION_PATH + session;
     }
 
     public static boolean isEmpty(CharSequence cs) {
