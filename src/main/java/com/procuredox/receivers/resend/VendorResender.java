@@ -163,7 +163,9 @@ public class VendorResender {
 
     private void copyPdfToSession(int batchNumber, String session) {
         final String location = directoryForSession(session);
+        log.debug("try to copy pdf files to new session [{}]", location);
         findPdfFiles(batchNumber).forEach(pdf -> {
+            log.debug("coping file [{}] to session [{}]", pdf.getFileName().toString(), session);
             try (final OutputStream out = Files.newOutputStream(Paths.get(location, pdf.getFileName().toString()))) {
                 Files.copy(pdf, out);
             } catch (IOException e) {
@@ -185,6 +187,7 @@ public class VendorResender {
 
     private Stream<Path> findFiles(int batchNumber, String extension) {
         final String location = directoryForBatch(batchNumber);
+        log.debug("try to find files in [{}]", location);
 
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(location), "*." + extension)) {
             return StreamSupport.stream(directoryStream.spliterator(), false);
