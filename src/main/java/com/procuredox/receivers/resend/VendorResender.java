@@ -12,10 +12,7 @@ import javax.sql.DataSource;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -166,8 +163,9 @@ public class VendorResender {
         final String location = directoryForSession(session);
         log.debug("try to copy pdf files to new session [{}]", location);
         findPdfFiles(batchNumber).forEach(pdf -> {
-            log.debug("coping file [{}] to session [{}]", pdf.getFileName().toString(), session);
-            try (final OutputStream out = Files.newOutputStream(Paths.get(location, pdf.getFileName().toString()))) {
+            final String filename = pdf.getFileName().toString();
+            log.debug("coping file [{}] to session [{}]", filename, session);
+            try (final OutputStream out = Files.newOutputStream(Paths.get(location, filename), StandardOpenOption.CREATE, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
                 Files.copy(pdf, out);
             } catch (IOException e) {
                 throw new RuntimeException("can't copy pdf to session", e);
