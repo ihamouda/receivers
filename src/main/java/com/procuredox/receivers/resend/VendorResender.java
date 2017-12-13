@@ -187,8 +187,7 @@ public class VendorResender {
         final String location = directoryForBatch(batchNumber);
 
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(location), "*." + extension)) {
-            return StreamSupport.stream(directoryStream.spliterator(), false)
-                    .filter(Files::isRegularFile);
+            return StreamSupport.stream(directoryStream.spliterator(), false);
         } catch (IOException e) {
             throw new RuntimeException("can't read batch directory", e);
         }
