@@ -162,15 +162,20 @@ public class VendorResender {
     private void copyPdfToSession(int batchNumber, String session) {
         final String location = directoryForSession(session);
         log.debug("try to copy pdf files to new session [{}]", location);
-        findPdfFiles(batchNumber).forEach(pdf -> {
-            final String filename = pdf.getFileName().toString();
-            log.debug("coping file [{}] to session [{}]", filename, session);
-            try (final OutputStream out = Files.newOutputStream(Paths.get(location, filename), StandardOpenOption.CREATE, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
-                Files.copy(pdf, out);
-            } catch (IOException e) {
-                throw new RuntimeException("can't copy pdf to session", e);
-            }
-        });
+        try {
+            Files.createDirectories(Paths.get(location));
+            findPdfFiles(batchNumber).forEach(pdf -> {
+                final String filename = pdf.getFileName().toString();
+                log.debug("coping file [{}] to session [{}]", filename, session);
+                try (final OutputStream out = Files.newOutputStream(Paths.get(location, filename))) {
+                    Files.copy(pdf, out);
+                } catch (IOException e) {
+                    throw new RuntimeException("can't copy pdf to session", e);
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException("can't create session directory");
+        }
     }
 
     private List<Path> findPdfFiles(int batchNumber) {
