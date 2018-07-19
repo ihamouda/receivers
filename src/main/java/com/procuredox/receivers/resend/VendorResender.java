@@ -2,6 +2,7 @@ package com.procuredox.receivers.resend;
 
 import com.procuredox.receivers.AppResources;
 import com.procuredox.receivers.MyDataSourceFactory;
+import com.procuredox.receivers.cat.cXML.Vendor;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ import java.util.stream.StreamSupport;
  * @author procuredox on 12/12/17.
  */
 public class VendorResender {
-    private static final Logger log = LoggerFactory.getLogger(PoResender.class);
+    private static final Logger log = LoggerFactory.getLogger(VendorResender.class);
 
     private static final String BATCH_PATH;
     private static final String SESSION_PATH;
@@ -223,8 +224,11 @@ public class VendorResender {
         final String location = directoryForBatch(batchNumber);
         log.debug("try to find files in [{}]", location);
 
-        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(location), "*." + extension)) {
-            return consumer.apply(StreamSupport.stream(directoryStream.spliterator(), false));
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(location))) {
+            final Stream<Path> stream = StreamSupport
+                    .stream(directoryStream.spliterator(), false)
+                    .filter(path -> path.toString().toLowerCase().endsWith("." + extension));
+            return consumer.apply(stream);
         } catch (IOException e) {
             throw new RuntimeException("can't read batch directory", e);
         }
