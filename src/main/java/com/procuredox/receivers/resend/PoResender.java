@@ -63,7 +63,7 @@ public class PoResender {
         final String uuid = UUID.randomUUID().toString();
         switch (DocType.valueOf(data.getDocType())) {
             case INV: return String.format("fnAck_Invoice_%s_%s_%s.xml", batchNumber, data.getSenderIdentifier(), normalize(uuid));
-            case POACK: return String.format("fnAck_PurchaseOrderAcknowledgement_%s_%s_%s.xml", batchNumber, data.getBuyerCode(), normalize(uuid));
+            case POACK: return String.format("fnAck_PurchaseOrderAcknowledgement_%s_%s_%s.xml", batchNumber, data.getSenderIdentifier(), normalize(uuid));
             default: return "fnAck.xml";
         }
     }
